@@ -40,7 +40,7 @@ public class A2AAutoConfiguration {
                 .name(properties.getAgent().getName())
                 .description(properties.getAgent().getDescription())
                 .version(properties.getAgent().getVersion())
-                .capabilities(AgentCapabilities.builder().streaming(false).build())
+                .capabilities(AgentCapabilities.builder().streaming(true).build())
                 .defaultInputModes(List.of("text"))
                 .defaultOutputModes(List.of("text"))
                 .skills(List.of())

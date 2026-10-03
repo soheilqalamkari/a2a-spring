@@ -2,6 +2,7 @@ package io.a2aspring.web;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.Flow;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.a2aproject.sdk.jsonrpc.common.json.JsonUtil;
@@ -14,6 +15,9 @@ import org.a2aproject.sdk.jsonrpc.common.wrappers.GetTaskPushNotificationConfigR
 import org.a2aproject.sdk.jsonrpc.common.wrappers.ListTaskPushNotificationConfigsRequest;
 import org.a2aproject.sdk.jsonrpc.common.wrappers.ListTasksRequest;
 import org.a2aproject.sdk.jsonrpc.common.wrappers.SendMessageRequest;
+import org.a2aproject.sdk.jsonrpc.common.wrappers.SendStreamingMessageRequest;
+import org.a2aproject.sdk.jsonrpc.common.wrappers.SendStreamingMessageResponse;
+import org.a2aproject.sdk.jsonrpc.common.wrappers.SubscribeToTaskRequest;
 import org.a2aproject.sdk.server.ServerCallContext;
 import org.a2aproject.sdk.transport.jsonrpc.handler.JSONRPCHandler;
 
@@ -26,8 +30,8 @@ public final class JsonRpcRequestDispatcher {
     }
 
     public String dispatch(String request, ServerCallContext context) throws Exception {
-        JsonObject root = JsonParser.parseString(request).getAsJsonObject();
-        String method = root.has("method") ? root.get("method").getAsString() : "";
+        JsonObject root = root(request);
+        String method = method(root);
         Object response = switch (method) {
             case "message/send", "SendMessage" -> handler.onMessageSend(
                     JsonUtil.fromJson(request, SendMessageRequest.class), context);
@@ -54,6 +58,34 @@ public final class JsonRpcRequestDispatcher {
             default -> methodNotFound(root, method);
         };
         return JsonUtil.toJson(response);
+    }
+
+    public boolean isStreaming(String request) {
+        String method = method(root(request));
+        return "message/stream".equals(method)
+                || "SendStreamingMessage".equals(method)
+                || "tasks/resubscribe".equals(method)
+                || "SubscribeToTask".equals(method);
+    }
+
+    public Flow.Publisher<SendStreamingMessageResponse> dispatchStreaming(
+            String request, ServerCallContext context) throws Exception {
+        String method = method(root(request));
+        return switch (method) {
+            case "message/stream", "SendStreamingMessage" -> handler.onMessageSendStream(
+                    JsonUtil.fromJson(request, SendStreamingMessageRequest.class), context);
+            case "tasks/resubscribe", "SubscribeToTask" -> handler.onSubscribeToTask(
+                    JsonUtil.fromJson(request, SubscribeToTaskRequest.class), context);
+            default -> throw new IllegalArgumentException("Unsupported streaming method: " + method);
+        };
+    }
+
+    private JsonObject root(String request) {
+        return JsonParser.parseString(request).getAsJsonObject();
+    }
+
+    private String method(JsonObject root) {
+        return root.has("method") ? root.get("method").getAsString() : "";
     }
 
     private Map<String, Object> methodNotFound(JsonObject root, String method) {

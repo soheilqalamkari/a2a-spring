@@ -4,10 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Map;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import org.a2aproject.sdk.client.http.JdkA2AHttpClient;
 import org.a2aproject.sdk.client.transport.jsonrpc.JSONRPCTransport;
 import org.a2aproject.sdk.client.transport.spi.interceptors.ClientCallContext;
 import org.a2aproject.sdk.jsonrpc.common.json.JsonUtil;
+import org.a2aproject.sdk.jsonrpc.common.wrappers.SendStreamingMessageRequest;
 import org.a2aproject.sdk.server.agentexecution.AgentExecutor;
 import org.a2aproject.sdk.server.agentexecution.RequestContext;
 import org.a2aproject.sdk.server.tasks.AgentEmitter;
@@ -73,6 +78,32 @@ class A2AClientInteropTest {
         } finally {
             transport.close();
         }
+    }
+
+    @Test
+    void streamingJsonRpcReturnsServerSentEvents() throws Exception {
+        Message message = Message.builder()
+                .role(Message.Role.ROLE_USER)
+                .messageId("stream-message")
+                .contextId("stream-context")
+                .parts(new TextPart("stream hello"))
+                .build();
+        MessageSendParams params = MessageSendParams.builder().message(message).build();
+        String requestBody = JsonUtil.toJson(new SendStreamingMessageRequest("stream-request", params));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:" + port + "/a2a"))
+                .header("Content-Type", "application/json")
+                .header("Accept", "text/event-stream")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+        HttpResponse<String> response = HttpClient.newHttpClient()
+                .send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.headers().firstValue("content-type")).hasValueSatisfying(
+                value -> assertThat(value).contains("text/event-stream"));
+        assertThat(response.body()).contains("data:", "Hello from interop agent");
     }
 
     @SpringBootConfiguration
