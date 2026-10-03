@@ -1,0 +1,6 @@
+target/
+.idea/
+*.iml
+.DS_Store
+*.log
+a2a-spring-project-requirements.md

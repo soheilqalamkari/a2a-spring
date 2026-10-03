@@ -1,0 +1,9 @@
+a2a:
+  agent:
+    name: hello-world-agent
+    description: A minimal Spring Boot A2A agent
+    version: 0.1.0
+    url: http://localhost:8080/a2a
+  server:
+    enabled: true
+    transport: JSONRPC
