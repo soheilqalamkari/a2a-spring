@@ -26,7 +26,7 @@ public class A2AWebController {
         this.contextFactory = contextFactory;
     }
 
-    @PostMapping(value = {"/a2a", "/"}, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = {"/a2a", "/a2a/", "/"}, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> jsonRpc(@RequestBody String request, jakarta.servlet.http.HttpServletRequest servletRequest) throws Exception {
         var context = contextFactory.create(servletRequest);
         try {
