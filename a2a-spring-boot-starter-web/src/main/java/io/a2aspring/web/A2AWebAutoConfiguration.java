@@ -116,8 +116,15 @@ public class A2AWebAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    A2AWebController a2aWebController(JSONRPCHandler handler, A2ARuntime runtime) {
-        return new A2AWebController(handler, runtime);
+    ServerCallContextFactory a2aServerCallContextFactory() {
+        return new ServletServerCallContextFactory();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    A2AWebController a2aWebController(JSONRPCHandler handler,
+                                      ServerCallContextFactory contextFactory) {
+        return new A2AWebController(handler, contextFactory);
     }
 
     @Bean

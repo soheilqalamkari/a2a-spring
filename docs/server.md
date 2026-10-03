@@ -18,5 +18,11 @@ notification delivery until an application supplies a real
 `PushNotificationSender` bean. Applications can replace the task store,
 request handler, event bus, executor, or push sender with Spring beans.
 
+Incoming servlet requests are converted to the SDK's `ServerCallContext` by a
+dedicated `ServerCallContextFactory`. The default factory always provides a
+non-null SDK `User`: unauthenticated requests use the `anonymous` user, while a
+servlet principal is mapped to an authenticated user. Applications can replace
+the factory when their authentication or tenant model needs richer context.
+
 Streaming, WebFlux, security, persistence, and observability are planned
 modules rather than promises of the current MVP.
