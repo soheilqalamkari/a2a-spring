@@ -12,6 +12,7 @@ claim that this repository is already part of the official organization.
    [CONTRIBUTING_INTEGRATIONS.md](https://github.com/a2aproject/a2a-java/blob/main/CONTRIBUTING_INTEGRATIONS.md).
 5. Include the repository/project page, dependency coordinates, usage steps,
    sample link, compatibility matrix, and interoperability test evidence.
+   Include the TCK report once the conformance scaffold is enabled and passes.
 6. Ask maintainers whether the integration should be listed in the Java SDK
    README, the A2A website, or both.
 7. Do not describe the repository as official until the upstream review is

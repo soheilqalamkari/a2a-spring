@@ -14,7 +14,7 @@ This is an early MVP foundation. It currently provides:
 - `a2a-spring-boot-starter-web` with Spring MVC JSON-RPC hosting;
 - a runnable `samples/hello-world` application.
 
-The web starter exposes `GET /.well-known/agent-card.json` and `POST /a2a` for JSON-RPC `message/send` requests. Streaming, WebFlux, security, persistence, and TCK coverage remain planned follow-up work before a public release is tagged.
+The web starter exposes `GET /.well-known/agent-card.json` and `POST /a2a` for JSON-RPC `message/send` requests. The official-client interoperability test passes; full TCK coverage remains a required follow-up before a public release is tagged.
 
 Documentation:
 
@@ -22,6 +22,7 @@ Documentation:
 - [Configuration](docs/configuration.md)
 - [Server behavior](docs/server.md)
 - [Compatibility](docs/compatibility.md)
+- [TCK conformance](docs/tck.md)
 - [Release process](docs/releasing.md)
 - [Maintainer proposal](docs/maintainer-proposal.md)
 - [Upstream submission checklist](docs/upstream-submission.md)
