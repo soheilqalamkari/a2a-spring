@@ -6,7 +6,9 @@ official A2A Java SDK server request handler.
 ## Endpoints
 
 - `GET /.well-known/agent-card.json` returns the configured Agent Card.
-- `POST /a2a` accepts JSON-RPC `message/send` requests.
+- `POST /a2a` accepts JSON-RPC message, task, and push-configuration requests.
+- `message/stream` and `tasks/resubscribe` return Server-Sent Events with
+  `Content-Type: text/event-stream`.
 - `POST /a2a` also accepts the official Java SDK client's `SendMessage`
   operation name, which is equivalent to `message/send`.
 
@@ -24,5 +26,5 @@ non-null SDK `User`: unauthenticated requests use the `anonymous` user, while a
 servlet principal is mapped to an authenticated user. Applications can replace
 the factory when their authentication or tenant model needs richer context.
 
-Streaming, WebFlux, security, persistence, and observability are planned
-modules rather than promises of the current MVP.
+WebFlux, security, persistence, push notification delivery, and observability
+are planned modules rather than promises of the current MVP.

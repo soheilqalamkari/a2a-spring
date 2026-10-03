@@ -2,10 +2,10 @@
 
 The official A2A integration guidance asks integrations to pass the [A2A
 TCK](https://github.com/a2aproject/a2a-tck) and to make the result visible.
-The current MVP has an official-client interoperability test, but is not yet
-TCK-conformant: it currently implements non-streaming `message/send` and does
-not expose the full task, streaming, push-notification, and test-store surface
-required by the upstream `AbstractA2AServerTest`.
+The current MVP has official-client interoperability tests, including SSE
+streaming, but is not yet TCK-conformant: it does not expose the complete push
+notification delivery and test-store surface required by the upstream
+`AbstractA2AServerTest`.
 
 The project includes a compiled compatibility scaffold,
 `A2ASpringAbstractServerTest`, based on the official

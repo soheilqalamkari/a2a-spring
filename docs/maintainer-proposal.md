@@ -31,8 +31,8 @@ Agent Card.
 
 ## Scope boundaries
 
-The MVP intentionally does not claim WebFlux, streaming, authentication,
-persistence, push notification delivery, observability, or Spring AI support.
+The MVP intentionally does not claim WebFlux, authentication, persistence,
+push notification delivery, observability, or Spring AI support.
 Those can be added as separate modules after maintainers agree on the API and
 compatibility boundary.
 
