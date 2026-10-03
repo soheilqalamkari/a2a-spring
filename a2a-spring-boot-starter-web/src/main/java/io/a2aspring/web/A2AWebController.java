@@ -26,9 +26,22 @@ public class A2AWebController {
         this.contextFactory = contextFactory;
     }
 
-    @PostMapping(value = {"/a2a", "/a2a/", "/"}, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = {"/a2a", "/a2a/", "/"})
     public ResponseEntity<?> jsonRpc(@RequestBody String request, jakarta.servlet.http.HttpServletRequest servletRequest) throws Exception {
         var context = contextFactory.create(servletRequest);
+        if (servletRequest.getContentType() == null
+                || !servletRequest.getContentType().toLowerCase(java.util.Locale.ROOT)
+                .startsWith(MediaType.APPLICATION_JSON_VALUE)) {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                    .body(JsonUtil.toJson(errorResponse(request, -32005,
+                            "Content type is not supported")));
+        }
+        try {
+            JsonParser.parseString(request).getAsJsonObject();
+        } catch (RuntimeException exception) {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                    .body(JsonUtil.toJson(errorResponse(request, -32700, "Parse error")));
+        }
         try {
             if (!dispatcher.isStreaming(request)) {
                 String response = dispatcher.dispatch(request, context);
@@ -62,11 +75,14 @@ public class A2AWebController {
                 }
             });
             return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(emitter);
-        } catch (RuntimeException exception) {
-            int code = exception instanceof com.google.gson.JsonParseException ? -32700 : -32602;
-            String message = code == -32700 ? "Parse error" : "Invalid params";
+        } catch (org.a2aproject.sdk.spec.A2AError exception) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-                    .body(JsonUtil.toJson(errorResponse(request, code, message)));
+                    .body(JsonUtil.toJson(errorResponse(request,
+                            exception.getCode() == null ? -32006 : exception.getCode(),
+                            exception.getMessage())));
+        } catch (RuntimeException exception) {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                    .body(JsonUtil.toJson(errorResponse(request, -32602, "Invalid params")));
         }
     }
 
@@ -79,7 +95,22 @@ public class A2AWebController {
         } catch (RuntimeException ignored) {
             response.put("id", null);
         }
-        response.put("error", Map.of("code", code, "message", message));
+        Map<String, Object> error = new LinkedHashMap<>();
+        error.put("code", code);
+        error.put("message", message);
+        error.put("data", java.util.List.of(Map.of(
+                "@type", "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason", switch (code) {
+                    case -32001 -> "TASK_NOT_FOUND";
+                    case -32002 -> "TASK_NOT_CANCELABLE";
+                    case -32003 -> "PUSH_NOTIFICATION_NOT_SUPPORTED";
+                    case -32004 -> "UNSUPPORTED_OPERATION";
+                    case -32005 -> "CONTENT_TYPE_NOT_SUPPORTED";
+                    case -32009 -> "VERSION_NOT_SUPPORTED";
+                    default -> "INVALID_PARAMS";
+                },
+                "domain", "a2a-protocol.org")));
+        response.put("error", error);
         return response;
     }
 }

@@ -14,11 +14,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class HelloWorldAgent implements AgentExecutor {
     @Override
+    public void cancel(RequestContext context, AgentEmitter emitter) {
+        emitter.cancel();
+    }
+
+    @Override
     public void execute(RequestContext context, AgentEmitter emitter) {
+        String messageId = context.getMessage().messageId();
         if (context.getTask() == null) {
             emitter.submit();
         }
-        String messageId = context.getMessage().messageId();
         if (messageId.contains("input-required")) {
             emitter.startWork();
             emitter.requiresInput();
@@ -43,6 +48,7 @@ public class HelloWorldAgent implements AgentExecutor {
                     new FileWithUri("text/plain", "output.txt", "https://example.com/output.txt"))));
         } else if (messageId.contains("message-response")) {
             emitter.sendMessage(List.of(new TextPart("Generated message response")));
+            emitter.complete();
         } else {
             emitter.addArtifact(List.of(new TextPart("Hello from a Spring Boot A2A agent")));
         }

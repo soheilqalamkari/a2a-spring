@@ -26,7 +26,7 @@ public class A2AAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    A2AConfigProvider a2aConfigProvider(Environment environment, A2AProperties properties) {
+    public A2AConfigProvider a2aConfigProvider(Environment environment, A2AProperties properties) {
         return new SpringEnvironmentA2AConfigProvider(environment, new DefaultValuesConfigProvider(),
                 java.util.Map.of("a2a.authorization.required",
                         Boolean.toString(properties.getSecurity().isEnabled()),
@@ -35,7 +35,7 @@ public class A2AAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    AgentCard a2aAgentCard(A2AProperties properties) {
+    public AgentCard a2aAgentCard(A2AProperties properties) {
         return AgentCard.builder()
                 .name(properties.getAgent().getName())
                 .description(properties.getAgent().getDescription())
@@ -56,8 +56,7 @@ public class A2AAutoConfiguration {
     @ConditionalOnBean(AgentExecutor.class)
     @ConditionalOnProperty(prefix = "a2a.server", name = "enabled", havingValue = "true", matchIfMissing = true)
     @ConditionalOnMissingBean
-    A2ARuntime a2aRuntime(A2AProperties properties, A2AConfigProvider provider,
-                          AgentExecutor executor, AgentCard agentCard) {
+    public A2ARuntime a2aRuntime(A2AProperties properties, A2AConfigProvider provider, AgentExecutor executor, AgentCard agentCard) {
         return new A2ARuntime(properties, provider, executor, agentCard);
     }
 

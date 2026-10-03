@@ -22,9 +22,7 @@ public class A2AAgentCardController {
 
     @GetMapping(value = "/.well-known/agent-card.json", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> agentCard() throws com.fasterxml.jackson.core.JsonProcessingException {
-        String json = objectMapper.copy()
-                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                .writeValueAsString(runtime.agentCard());
+        String json = objectMapper.copy().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(runtime.agentCard());
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(json);
     }
 }
