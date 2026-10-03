@@ -40,12 +40,15 @@ public class A2AAutoConfiguration {
                 .name(properties.getAgent().getName())
                 .description(properties.getAgent().getDescription())
                 .version(properties.getAgent().getVersion())
-                .capabilities(AgentCapabilities.builder().streaming(true).build())
+                .capabilities(AgentCapabilities.builder()
+                        .streaming(true)
+                        .extensions(List.of())
+                        .build())
                 .defaultInputModes(List.of("text"))
                 .defaultOutputModes(List.of("text"))
                 .skills(List.of())
                 .supportedInterfaces(List.of(new AgentInterface(
-                        properties.getServer().getTransport(), properties.getAgent().getUrl())))
+                        properties.getServer().getTransport(), properties.getAgent().getUrl(), "", "1.0")))
                 .build();
     }
 
