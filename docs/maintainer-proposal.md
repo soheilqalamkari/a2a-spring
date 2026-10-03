@@ -40,7 +40,7 @@ compatibility boundary.
 
 Please advise whether the integration should remain an independent community
 repository or move under the A2A organization. The current local coordinates
-and SCM metadata use `github.com/soheilghalamkari/a2a-spring` and
+and SCM metadata use `github.com/soheilqalamkari/a2a-spring` and
 `io.github.soheilghalamkari` provisionally; they should be changed if the
 maintainers prefer another repository or namespace.
 

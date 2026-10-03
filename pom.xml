@@ -18,7 +18,7 @@
 
     <name>A2A Spring Boot</name>
     <description>Spring Boot integration for the official A2A Java SDK</description>
-    <url>https://github.com/soheilghalamkari/a2a-spring</url>
+    <url>https://github.com/soheilqalamkari/a2a-spring</url>
 
     <licenses>
         <license>
@@ -33,9 +33,9 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:https://github.com/soheilghalamkari/a2a-spring.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/soheilghalamkari/a2a-spring.git</developerConnection>
-        <url>https://github.com/soheilghalamkari/a2a-spring</url>
+        <connection>scm:git:https://github.com/soheilqalamkari/a2a-spring.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/soheilqalamkari/a2a-spring.git</developerConnection>
+        <url>https://github.com/soheilqalamkari/a2a-spring</url>
     </scm>
 
     <modules>
