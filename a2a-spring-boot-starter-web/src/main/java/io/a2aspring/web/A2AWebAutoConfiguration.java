@@ -135,7 +135,8 @@ public class A2AWebAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    A2AAgentCardController a2aAgentCardController(A2ARuntime runtime) {
-        return new A2AAgentCardController(runtime);
+    A2AAgentCardController a2aAgentCardController(A2ARuntime runtime,
+                                                   com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
+        return new A2AAgentCardController(runtime, objectMapper);
     }
 }
