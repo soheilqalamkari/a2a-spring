@@ -37,7 +37,7 @@ public class HelloWorldAgent implements AgentExecutor {
         if (messageId.contains("artifact-text")) {
             emitter.addArtifact(List.of(new TextPart("Generated text content")));
         } else if (messageId.contains("artifact-data")) {
-            emitter.addArtifact(List.of(new DataPart(Map.of("value", "Generated data content"))));
+            emitter.addArtifact(List.of(new DataPart(Map.of("key", "value", "count", 42))));
         } else if (messageId.contains("artifact-file")) {
             emitter.addArtifact(List.of(new FilePart(
                     new FileWithUri("text/plain", "output.txt", "https://example.com/output.txt"))));
