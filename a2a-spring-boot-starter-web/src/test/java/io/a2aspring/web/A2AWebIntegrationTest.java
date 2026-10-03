@@ -48,13 +48,23 @@ class A2AWebIntegrationTest {
 
     @Test
     void returnsJsonRpcMethodNotFoundError() throws Exception {
-        String request = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tasks/get\",\"params\":{}}";
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"unknown/method\",\"params\":{}}";
 
         mockMvc.perform(post("/a2a").contentType("application/json").content(request))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json"))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("-32601")))
-                .andExpect(content().string(org.hamcrest.Matchers.containsString("tasks/get")));
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("unknown/method")));
+    }
+
+    @Test
+    void dispatchesTaskGetToOfficialSdkHandler() throws Exception {
+        String request = "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tasks/get\",\"params\":{\"id\":\"missing-task\"}}";
+
+        mockMvc.perform(post("/a2a").contentType("application/json").content(request))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("-32001")));
     }
 
     @SpringBootConfiguration
