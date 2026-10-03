@@ -23,6 +23,8 @@ Documentation:
 - [Server behavior](docs/server.md)
 - [Compatibility](docs/compatibility.md)
 - [Release process](docs/releasing.md)
+- [Maintainer proposal](docs/maintainer-proposal.md)
+- [Upstream submission checklist](docs/upstream-submission.md)
 
 ## Quick start
 
