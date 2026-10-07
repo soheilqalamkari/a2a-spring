@@ -64,7 +64,14 @@ a2a:
   server:
     enabled: true
     transport: JSONRPC
+    push-notifications-enabled: false
 ```
+
+The starter uses in-memory task and queue implementations by default. Replace
+the SDK `TaskStore`, `TaskStateProvider`, `QueueManager`,
+`PushNotificationConfigStore`, or `PushNotificationSender` with Spring beans
+when an application needs custom storage or delivery. Push notifications stay
+disabled unless `a2a.server.push-notifications-enabled` is set to `true`.
 
 ## Build
 

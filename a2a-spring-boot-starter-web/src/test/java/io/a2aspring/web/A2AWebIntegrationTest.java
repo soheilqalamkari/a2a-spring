@@ -7,7 +7,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.a2aproject.sdk.server.agentexecution.AgentExecutor;
 import org.a2aproject.sdk.server.agentexecution.RequestContext;
+import org.a2aproject.sdk.server.events.QueueManager;
 import org.a2aproject.sdk.server.tasks.AgentEmitter;
+import org.a2aproject.sdk.server.tasks.PushNotificationConfigStore;
+import org.a2aproject.sdk.server.tasks.TaskStore;
 import org.a2aproject.sdk.spec.TextPart;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -24,6 +27,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 class A2AWebIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private TaskStore taskStore;
+
+    @Autowired
+    private QueueManager queueManager;
+
+    @Autowired
+    private PushNotificationConfigStore pushNotificationConfigStore;
+
+    @Test
+    void exposesReplaceableSdkInfrastructureContracts() {
+        org.assertj.core.api.Assertions.assertThat(taskStore).isInstanceOf(
+                org.a2aproject.sdk.server.tasks.InMemoryTaskStore.class);
+        org.assertj.core.api.Assertions.assertThat(queueManager).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(pushNotificationConfigStore).isNotNull();
+    }
 
     @Test
     void servesAgentCard() throws Exception {

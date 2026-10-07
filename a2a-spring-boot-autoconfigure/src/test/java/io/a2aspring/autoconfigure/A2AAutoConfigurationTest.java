@@ -38,6 +38,14 @@ class A2AAutoConfigurationTest {
                 .run(context -> assertThat(context).doesNotHaveBean(A2ARuntime.class));
     }
 
+    @Test
+    void enablesPushNotificationsOnlyWhenConfigured() {
+        contextRunner.withUserConfiguration(ExecutorConfiguration.class)
+                .withPropertyValues("a2a.server.push-notifications-enabled=true")
+                .run(context -> assertThat(context.getBean(A2ARuntime.class).agentCard()
+                        .capabilities().pushNotifications()).isTrue());
+    }
+
     @Configuration(proxyBeanMethods = false)
     static class ExecutorConfiguration {
         @Bean

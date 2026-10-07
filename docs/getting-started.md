@@ -45,10 +45,17 @@ a2a:
   server:
     enabled: true
     transport: JSONRPC
+    push-notifications-enabled: false
 ```
 
 The starter exposes the Agent Card at `/.well-known/agent-card.json` and the
 JSON-RPC endpoint at `/a2a`.
+
+The default task and queue infrastructure is in memory. Applications can
+replace the official SDK `TaskStore`, `TaskStateProvider`, `QueueManager`,
+`PushNotificationConfigStore`, and `PushNotificationSender` contracts with
+Spring beans. Push notification delivery must be explicitly enabled and the
+application must provide the outbound sender implementation.
 
 Run the sample with:
 

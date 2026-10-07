@@ -15,10 +15,17 @@ official A2A Java SDK server request handler.
 Unsupported methods return a JSON-RPC method-not-found error with code
 `-32601`.
 
-The starter uses an in-memory task store and intentionally disables push
-notification delivery until an application supplies a real
-`PushNotificationSender` bean. Applications can replace the task store,
-request handler, event bus, executor, or push sender with Spring beans.
+The starter uses the official SDK's in-memory task store, queue manager, and
+push-configuration store by default. Each is exposed through the SDK contract
+(`TaskStore`, `QueueManager`, `PushNotificationConfigStore`, and related
+interfaces), so applications can replace them with Spring beans. A custom
+task store must also provide a `TaskStateProvider`.
+
+Push notification configuration and delivery are disabled by default. To
+advertise and enable the capability, set
+`a2a.server.push-notifications-enabled=true` and provide a real
+`PushNotificationSender` bean. The starter does not provide outbound HTTP
+delivery; applications are responsible for configuring that sender.
 
 Incoming servlet requests are converted to the SDK's `ServerCallContext` by a
 dedicated `ServerCallContextFactory`. The default factory always provides a

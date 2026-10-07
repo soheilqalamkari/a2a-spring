@@ -33,12 +33,18 @@ public class A2AProperties {
     public static class Server {
         private boolean enabled = true;
         private String transport = "JSONRPC";
+        private boolean pushNotificationsEnabled;
 
         public boolean isEnabled() { return enabled; }
         public void setEnabled(boolean enabled) { this.enabled = enabled; }
         public String getTransport() { return transport; }
         public void setTransport(String transport) {
             this.transport = transport == null ? null : transport.toUpperCase(Locale.ROOT);
+        }
+
+        public boolean isPushNotificationsEnabled() { return pushNotificationsEnabled; }
+        public void setPushNotificationsEnabled(boolean pushNotificationsEnabled) {
+            this.pushNotificationsEnabled = pushNotificationsEnabled;
         }
     }
 

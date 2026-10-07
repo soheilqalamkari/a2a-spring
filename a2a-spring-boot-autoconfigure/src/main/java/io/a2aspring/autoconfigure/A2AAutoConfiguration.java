@@ -30,7 +30,8 @@ public class A2AAutoConfiguration {
         return new SpringEnvironmentA2AConfigProvider(environment, new DefaultValuesConfigProvider(),
                 java.util.Map.of("a2a.authorization.required",
                         Boolean.toString(properties.getSecurity().isEnabled()),
-                        "a2a.push-notification.enabled", "false"));
+                        "a2a.push-notification.enabled",
+                        Boolean.toString(properties.getServer().isPushNotificationsEnabled())));
     }
 
     @Bean
@@ -42,6 +43,7 @@ public class A2AAutoConfiguration {
                 .version(properties.getAgent().getVersion())
                 .capabilities(AgentCapabilities.builder()
                         .streaming(true)
+                        .pushNotifications(properties.getServer().isPushNotificationsEnabled())
                         .extensions(List.of())
                         .build())
                 .defaultInputModes(List.of("text"))

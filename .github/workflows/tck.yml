@@ -1,0 +1,87 @@
+name: A2A TCK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  tck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Record tool versions
+        run: |
+          java -version 2>&1 | tee reports-java-version.txt
+          python --version | tee reports-python-version.txt
+          mvn --version | tee reports-maven-version.txt
+          mkdir -p reports
+
+      - name: Build the integration
+        run: mvn --batch-mode --no-transfer-progress -Dspring-boot.repackage.skip=true verify
+
+      - name: Start the hello-world server
+        run: |
+          mvn --batch-mode --no-transfer-progress \
+            -pl samples/hello-world -am \
+            spring-boot:run \
+            -Dspring-boot.run.arguments=--server.port=8080 \
+            > reports/server.log 2>&1 &
+          echo $! > server.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8080/.well-known/agent-card.json > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat reports/server.log
+          exit 1
+
+      - name: Install uv and the official TCK
+        run: |
+          python -m pip install --disable-pip-version-check uv
+          git clone --depth 1 https://github.com/a2aproject/a2a-tck.git "$RUNNER_TEMP/a2a-tck"
+          cd "$RUNNER_TEMP/a2a-tck"
+          uv venv
+          uv pip install -e .
+
+      - name: Run the JSON-RPC TCK
+        working-directory: ${{ runner.temp }}/a2a-tck
+        run: |
+          .venv/bin/python run_tck.py \
+            --sut-host http://127.0.0.1:8080 \
+            --transport jsonrpc \
+            --level must
+        env:
+          A2A_SDK_VERSION: 1.4.0.Final
+          SPRING_BOOT_VERSION: 3.5.6
+
+      - name: Collect TCK reports
+        if: always()
+        run: |
+          if [ -d "$RUNNER_TEMP/a2a-tck/reports" ]; then
+            cp -R "$RUNNER_TEMP/a2a-tck/reports" reports/tck
+          fi
+          if [ -f server.pid ]; then
+            kill "$(cat server.pid)" || true
+          fi
+
+      - name: Upload TCK evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a2a-tck-evidence
+          path: reports/
+          if-no-files-found: warn

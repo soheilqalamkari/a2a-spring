@@ -17,7 +17,7 @@ The project includes a compiled compatibility scaffold,
 server capabilities are implemented; it must not be presented as a passing TCK
 result.
 
-## Planned verification command
+## Local verification command
 
 The TCK requires Python 3.11+ and `uv`:
 
@@ -43,3 +43,17 @@ The TCK writes evidence to `reports/compatibility.json`,
 `reports/junitreport.xml`. A release or upstream pull request must link a
 reproducible CI report after the disabled test-store and push-notification
 capabilities are implemented.
+
+## CI verification
+
+The manually triggered [TCK workflow](../.github/workflows/tck.yml) runs the
+Maven verification suite, starts the hello-world server, executes the official
+JSON-RPC TCK, and uploads the generated reports as workflow artifacts. The
+workflow records the Java, Spring Boot, A2A Java SDK, Python, and TCK revisions
+used for each run.
+
+The current integration-list PR should link a successful workflow run only
+after `A2ASpringAbstractServerTest` is enabled and the remaining applicable
+JSON-RPC checks pass. Until then, the documented 78/93 result is compatibility
+evidence for the advertised MVP surface, not a claim of complete upstream
+conformance.

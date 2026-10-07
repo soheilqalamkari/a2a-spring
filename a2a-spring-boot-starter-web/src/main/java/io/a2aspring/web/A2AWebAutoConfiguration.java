@@ -10,13 +10,18 @@ import org.a2aproject.sdk.server.agentexecution.AgentExecutor;
 import org.a2aproject.sdk.server.events.InMemoryQueueManager;
 import org.a2aproject.sdk.server.events.MainEventBus;
 import org.a2aproject.sdk.server.events.MainEventBusProcessor;
+import org.a2aproject.sdk.server.events.QueueManager;
 import org.a2aproject.sdk.server.requesthandlers.DefaultRequestHandler;
 import org.a2aproject.sdk.server.requesthandlers.RequestHandler;
 import org.a2aproject.sdk.server.tasks.InMemoryTaskStore;
+import org.a2aproject.sdk.server.tasks.InMemoryPushNotificationConfigStore;
 import org.a2aproject.sdk.server.tasks.PushNotificationSender;
+import org.a2aproject.sdk.server.tasks.PushNotificationConfigStore;
+import org.a2aproject.sdk.server.tasks.TaskStateProvider;
 import org.a2aproject.sdk.server.tasks.TaskStore;
 import org.a2aproject.sdk.server.multitenancy.AgentExecutorRouter;
 import org.a2aproject.sdk.transport.jsonrpc.handler.JSONRPCHandler;
+import io.a2aspring.core.A2AProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -53,9 +58,24 @@ public class A2AWebAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(TaskStore.class)
     InMemoryTaskStore a2aTaskStore() {
         return new InMemoryTaskStore();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(TaskStateProvider.class)
+    TaskStateProvider a2aTaskStateProvider(TaskStore taskStore) {
+        if (taskStore instanceof TaskStateProvider provider) {
+            return provider;
+        }
+        throw new IllegalStateException("A custom TaskStore must also provide a TaskStateProvider");
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(PushNotificationConfigStore.class)
+    PushNotificationConfigStore a2aPushNotificationConfigStore() {
+        return new InMemoryPushNotificationConfigStore();
     }
 
     @Bean
@@ -74,16 +94,16 @@ public class A2AWebAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    InMemoryQueueManager a2aQueueManager(InMemoryTaskStore taskStore, MainEventBus eventBus) {
-        return new InMemoryQueueManager(taskStore, eventBus);
+    @ConditionalOnMissingBean(QueueManager.class)
+    QueueManager a2aQueueManager(TaskStateProvider taskStateProvider, MainEventBus eventBus) {
+        return new InMemoryQueueManager(taskStateProvider, eventBus);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    MainEventBusProcessor a2aEventBusProcessor(MainEventBus eventBus, InMemoryTaskStore taskStore,
+    MainEventBusProcessor a2aEventBusProcessor(MainEventBus eventBus, TaskStore taskStore,
                                                 PushNotificationSender pushNotificationSender,
-                                                InMemoryQueueManager queueManager) {
+                                                QueueManager queueManager) {
         MainEventBusProcessor processor = new MainEventBusProcessor(eventBus, taskStore,
                 pushNotificationSender, queueManager);
         processor.start();
@@ -93,17 +113,20 @@ public class A2AWebAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     RequestHandler a2aRequestHandler(AgentExecutor executor, TaskStore taskStore,
-                                     InMemoryQueueManager queueManager,
+                                     QueueManager queueManager,
                                      MainEventBusProcessor processor,
+                                     PushNotificationConfigStore pushConfigStore,
+                                     A2AProperties properties,
                                      ExecutorService a2aExecutor) {
         return DefaultRequestHandler.builder()
                 .agentExecutor(executor)
                 .taskStore(taskStore)
                 .queueManager(queueManager)
+                .pushConfigStore(pushConfigStore)
                 .mainEventBusProcessor(processor)
                 .executor(a2aExecutor)
                 .eventConsumerExecutor(a2aExecutor)
-                .pushNotificationsEnabled(false)
+                .pushNotificationsEnabled(properties.getServer().isPushNotificationsEnabled())
                 .build();
     }
 
