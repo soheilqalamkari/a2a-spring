@@ -1,0 +1,26 @@
+name: Branch policy
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  branch-name:
+    name: Validate feature branch name
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require an approved branch prefix
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          if [[ "$HEAD_BRANCH" =~ ^(feature|fix|docs|chore|refactor|test|build|ci|perf|release)/[a-z0-9][a-z0-9-]*$ ]]; then
+            echo "Approved branch: $HEAD_BRANCH"
+            exit 0
+          fi
+
+          echo "Invalid branch name: $HEAD_BRANCH"
+          echo "Use one of: feature/, fix/, docs/, chore/, refactor/, test/, build/, ci/, perf/, release/"
+          exit 1

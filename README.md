@@ -26,6 +26,7 @@ Documentation:
 - [Release process](docs/releasing.md)
 - [Maintainer proposal](docs/maintainer-proposal.md)
 - [Upstream submission checklist](docs/upstream-submission.md)
+- [Development workflow](docs/development-workflow.md)
 
 ## Quick start
 

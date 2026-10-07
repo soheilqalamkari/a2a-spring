@@ -18,3 +18,36 @@ include a project page, usage instructions, runnable sample, interoperability
 tests, and evidence of the official SDK compatibility.
 
 Use conventional commit messages and include a clear compatibility note when changing the supported A2A SDK version.
+
+## Branch and pull request workflow
+
+The `main` branch is release-facing and must not be used for direct
+development. All changes must be made on a short-lived feature branch and
+merged through a pull request.
+
+Use one of these branch prefixes:
+
+```text
+feature/<short-description>
+fix/<short-description>
+docs/<short-description>
+chore/<short-description>
+refactor/<short-description>
+test/<short-description>
+build/<short-description>
+ci/<short-description>
+perf/<short-description>
+release/<short-description>
+```
+
+Branch names use lowercase letters, numbers, and hyphens. Examples:
+
+```bash
+git switch -c feature/persistent-task-store
+git switch -c fix/sse-stream-close
+git switch -c docs/tck-evidence
+```
+
+Pull requests targeting `main` must pass the Build workflow and the branch
+naming policy. Maintainers should enable branch protection requiring pull
+requests, a successful Build check, and an up-to-date branch before merge.
