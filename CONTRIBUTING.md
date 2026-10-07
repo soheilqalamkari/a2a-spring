@@ -22,32 +22,29 @@ Use conventional commit messages and include a clear compatibility note when cha
 ## Branch and pull request workflow
 
 The `main` branch is release-facing and must not be used for direct
-development. All changes must be made on a short-lived feature branch and
-merged through a pull request.
+development. Create one short-lived branch for each issue and merge it
+through a pull request.
 
-Use one of these branch prefixes:
+Use the issue number followed by a short description:
 
 ```text
-feature/<short-description>
-fix/<short-description>
-docs/<short-description>
-chore/<short-description>
-refactor/<short-description>
-test/<short-description>
-build/<short-description>
-ci/<short-description>
-perf/<short-description>
-release/<short-description>
+issue-123-short-description
 ```
 
-Branch names use lowercase letters, numbers, and hyphens. Examples:
+Examples:
 
 ```bash
-git switch -c feature/persistent-task-store
-git switch -c fix/sse-stream-close
-git switch -c docs/tck-evidence
+git switch -c issue-123-persistent-task-store
+git switch -c issue-124-sse-stream-close
+git switch -c issue-125-tck-evidence
 ```
 
-Pull requests targeting `main` must pass the Build workflow and the branch
-naming policy. Maintainers should enable branch protection requiring pull
-requests, a successful Build check, and an up-to-date branch before merge.
+Link the issue in both the pull request description and the commit message.
+Include tests and appropriate documentation. Squash commits before merging
+unless multiple meaningful commits are needed. Every pull request requires
+review by at least one project committer.
+
+Pull requests targeting `main` must pass the Build workflow and the
+contribution-branch policy. Maintainers should enable branch protection
+requiring pull requests, a successful Build check, an up-to-date branch, and
+conversation resolution before merge.
