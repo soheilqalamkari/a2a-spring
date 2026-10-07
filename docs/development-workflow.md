@@ -34,11 +34,16 @@ commits. The branch policy and Build workflows must pass before merge.
 GitHub repository settings should require the following for `main`:
 
 - pull requests instead of direct pushes;
-- at least one approving review;
 - the `Build / build` and `Branch policy / Validate contribution branch` checks;
 - conversation resolution;
 - an up-to-date branch before merging;
 - no force pushes or branch deletion.
+
+Because this repository currently has one maintainer, approval requirements
+should remain disabled here. The maintainer may merge after the pull request
+checks pass. Any future additional maintainer can be added as a required
+reviewer. The separate upstream A2A Java integration pull request still
+requires review by an A2A project committer.
 
 The GitHub settings are administrative state and must be enabled by a
 repository administrator; the workflow in this repository provides the

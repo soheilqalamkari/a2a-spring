@@ -41,8 +41,10 @@ git switch -c issue-125-tck-evidence
 
 Link the issue in both the pull request description and the commit message.
 Include tests and appropriate documentation. Squash commits before merging
-unless multiple meaningful commits are needed. Every pull request requires
-review by at least one project committer.
+unless multiple meaningful commits are needed. When this repository has
+multiple maintainers, require review by at least one maintainer. While it has
+one maintainer, the pull request and required CI checks provide the review
+gate; the maintainer may merge after those checks pass.
 
 Pull requests targeting `main` must pass the Build workflow and the
 contribution-branch policy. Maintainers should enable branch protection
