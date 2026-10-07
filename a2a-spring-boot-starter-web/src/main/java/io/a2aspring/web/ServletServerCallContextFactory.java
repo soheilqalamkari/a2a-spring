@@ -9,6 +9,7 @@ import java.util.Set;
 import jakarta.servlet.http.HttpServletRequest;
 import org.a2aproject.sdk.server.ServerCallContext;
 import org.a2aproject.sdk.server.auth.User;
+import org.a2aproject.sdk.spec.TransportProtocol;
 
 /** Default servlet adapter for the SDK's non-null server call context. */
 public final class ServletServerCallContextFactory implements ServerCallContextFactory {
@@ -17,7 +18,7 @@ public final class ServletServerCallContextFactory implements ServerCallContextF
     @Override
     public ServerCallContext create(HttpServletRequest request) {
         Map<String, Object> state = new LinkedHashMap<>();
-        state.put(ServerCallContext.TRANSPORT_KEY, "jsonrpc");
+        state.put(ServerCallContext.TRANSPORT_KEY, TransportProtocol.JSONRPC);
         state.put(HEADERS_STATE_KEY, headers(request));
 
         String protocolVersion = request.getHeader("A2A-Version");
