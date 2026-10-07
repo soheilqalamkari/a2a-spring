@@ -1,0 +1,24 @@
+name: Branch policy
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  branch-name:
+    name: Validate contribution branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require a non-main contribution branch
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          if [[ "$HEAD_BRANCH" == "main" || -z "$HEAD_BRANCH" ]]; then
+            echo "Pull requests must originate from a separate contribution branch."
+            exit 1
+          fi
+
+          echo "Contribution branch: $HEAD_BRANCH"
