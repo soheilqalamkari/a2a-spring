@@ -21,16 +21,14 @@ public final class SpringEnvironmentA2AConfigProvider implements A2AConfigProvid
         this(environment, defaults, Map.of());
     }
 
-    public SpringEnvironmentA2AConfigProvider(Environment environment, A2AConfigProvider defaults,
-                                              Map<String, String> overrides) {
+    public SpringEnvironmentA2AConfigProvider(Environment environment, A2AConfigProvider defaults, Map<String, String> overrides) {
         Assert.notNull(environment, "environment must not be null");
         Assert.notNull(defaults, "defaults must not be null");
         this.environment = environment;
         this.defaults = defaults;
         this.overrides = Map.copyOf(overrides);
         try {
-            Enumeration<java.net.URL> resources = Thread.currentThread().getContextClassLoader()
-                    .getResources("META-INF/a2a-defaults.properties");
+            Enumeration<java.net.URL> resources = Thread.currentThread().getContextClassLoader().getResources("META-INF/a2a-defaults.properties");
             while (resources.hasMoreElements()) {
                 try (InputStream stream = resources.nextElement().openStream()) {
                     classpathDefaults.load(stream);

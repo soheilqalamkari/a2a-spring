@@ -134,7 +134,12 @@ public class A2AWebAutoConfiguration {
     @ConditionalOnMissingBean
     JSONRPCHandler a2aJsonRpcHandler(A2ARuntime runtime, RequestHandler requestHandler,
                                      ExecutorService a2aExecutor) {
-        return new JSONRPCHandler(runtime.agentCard(), requestHandler, a2aExecutor);
+        return new JSONRPCHandler(
+                SpringCdiInstance.of(runtime.agentCard()),
+                SpringCdiInstance.of(runtime.agentCard()),
+                requestHandler,
+                a2aExecutor,
+                SpringCdiInstance.empty());
     }
 
     @Bean
