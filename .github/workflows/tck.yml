@@ -23,11 +23,20 @@ jobs:
           python-version: '3.11'
 
       - name: Record tool versions
+        id: tool-versions
         run: |
-          java -version 2>&1 | tee reports-java-version.txt
-          python --version | tee reports-python-version.txt
-          mvn --version | tee reports-maven-version.txt
           mkdir -p reports
+          java -version 2>&1 | tee reports/java-version.txt
+          python --version | tee reports/python-version.txt
+          mvn --version | tee reports/maven-version.txt
+          sdk_version="$(mvn --quiet --batch-mode --no-transfer-progress \
+            help:evaluate -Dexpression=a2a-java-sdk.version -DforceStdout)"
+          spring_boot_version="$(mvn --quiet --batch-mode --no-transfer-progress \
+            help:evaluate -Dexpression=project.parent.version -DforceStdout)"
+          printf '%s\n' "$sdk_version" | tee reports/a2a-java-sdk-version.txt
+          printf '%s\n' "$spring_boot_version" | tee reports/spring-boot-version.txt
+          echo "a2a_sdk=$sdk_version" >> "$GITHUB_OUTPUT"
+          echo "spring_boot=$spring_boot_version" >> "$GITHUB_OUTPUT"
 
       - name: Build the integration
         run: mvn --batch-mode --no-transfer-progress -Dspring-boot.repackage.skip=true verify
@@ -53,6 +62,7 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check uv
           git clone --depth 1 https://github.com/a2aproject/a2a-tck.git "$RUNNER_TEMP/a2a-tck"
+          git -C "$RUNNER_TEMP/a2a-tck" rev-parse HEAD | tee reports/tck-commit.txt
           cd "$RUNNER_TEMP/a2a-tck"
           uv venv
           uv pip install -e .
@@ -65,8 +75,8 @@ jobs:
             --transport jsonrpc \
             --level must
         env:
-          A2A_SDK_VERSION: 1.4.0.Final
-          SPRING_BOOT_VERSION: 3.5.6
+          A2A_SDK_VERSION: ${{ steps.tool-versions.outputs.a2a_sdk }}
+          SPRING_BOOT_VERSION: ${{ steps.tool-versions.outputs.spring_boot }}
 
       - name: Collect TCK reports
         if: always()

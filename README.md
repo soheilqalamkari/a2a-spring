@@ -14,7 +14,7 @@ The integration is listed in the A2A Java SDK ecosystem. The project remains an 
 - `a2a-spring-boot-starter-web` with Spring MVC JSON-RPC hosting;
 - a runnable `samples/hello-world` application.
 
-The web starter exposes `GET /.well-known/agent-card.json` and `POST /a2a` for JSON-RPC requests, including `message/send`, task operations, push-configuration operations, and SSE-based `message/stream`. Official-client interoperability tests pass, and the advertised JSON-RPC interface passes the applicable TCK checks; see [TCK conformance](docs/tck.md) for scope and remaining requirements.
+The web starter exposes `GET /.well-known/agent-card.json` and `POST /a2a` for JSON-RPC requests, including `message/send`, task operations, push-configuration operations, and SSE-based `message/stream`. Official-client interoperability tests are included; see [TCK conformance](docs/tck.md) for verified results, scope, and remaining requirements.
 
 Documentation:
 
@@ -23,6 +23,7 @@ Documentation:
 - [Server behavior](docs/server.md)
 - [Compatibility](docs/compatibility.md)
 - [TCK conformance](docs/tck.md)
+- [Release roadmap](docs/release-roadmap.md)
 - [Release process](docs/releasing.md)
 - [Project and upstream status](docs/maintainer-proposal.md)
 - [Upstream integration listing](docs/upstream-submission.md)
@@ -84,7 +85,10 @@ mvn verify
 
 ## Project direction
 
-The planned modules are documented in the project requirements. The next increments are WebFlux, security, observability, persistence, push notification delivery, and expanded TCK coverage as separate, focused modules.
+See the [release roadmap](docs/release-roadmap.md) for milestone scope and
+release gates. The first stable release targets Spring MVC with JSON-RPC and
+SSE; WebFlux, additional transports, and Spring AI are later, separate
+increments.
 
 ## Project status and relationship to A2A Java
 
