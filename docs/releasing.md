@@ -1,10 +1,23 @@
 # Releasing
 
+Release scope and acceptance gates are defined in the
+[A2A Spring release roadmap](release-roadmap.md). The planned sequence is
+`0.1.x` community preview, `0.2.0` conformance, `0.3.0` production foundations,
+and `1.0.0` stable Spring MVC. These are outcome-based milestones, not date
+commitments.
+
 Release artifacts are prepared for the Central Publisher Portal. The root
 `release` Maven profile attaches source and Javadoc JARs, signs artifacts with
 GPG, and enables Sonatype's `central-publishing-maven-plugin`.
 
-Before a release:
+Before a release candidate:
+
+1. Confirm the milestone's roadmap gates, including `mvn verify`, the enabled
+   official server test contract, and the TCK for advertised capabilities.
+2. Update the compatibility matrix, changelog, sample, dependency coordinates,
+   known limitations, and TCK report link.
+
+Before publishing artifacts:
 
 1. Register and verify the `io.github.soheilghalamkari` namespace in the
    Central Portal.
@@ -19,6 +32,7 @@ Before a release:
    `Release` workflow after adding `CENTRAL_USERNAME`, `CENTRAL_PASSWORD`,
    `GPG_PRIVATE_KEY`, and `MAVEN_GPG_PASSPHRASE` repository secrets.
 
-The current project is not published yet. Publication must wait until the
-repository ownership, namespace, credentials, and maintainer review are
-resolved.
+The current project is not published yet. For the 1.0.0 milestone, verify
+artifact resolution from a clean consumer project. If Maven Central publication
+is blocked, publish reproducible build and local-install instructions as
+allowed by the upstream integration guide.
