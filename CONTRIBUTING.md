@@ -1,52 +1,24 @@
 # Contributing
 
-This project is intended to become a community Spring Boot integration for the A2A ecosystem.
+This is a community-maintained Spring Boot integration for the official A2A Java SDK. It is listed in the SDK's [server integrations](https://github.com/a2aproject/a2a-java/blob/main/docs/content/dev/server.md#server-integrations) following the acceptance of [A2A Java PR #1201](https://github.com/a2aproject/a2a-java/pull/1201). The listing does not make this repository part of the A2A organization or SDK codebase, and the A2A maintainers do not maintain this repository.
 
-Before opening an upstream proposal:
+Contributions are welcome through issues and pull requests. The project follows the A2A Java project's contribution practices where they apply here: focused changes, an issue for the work, tests, documentation, and review before merge.
 
-1. Keep protocol implementation in the official A2A Java SDK.
-2. Keep Spring MVC, WebFlux, Security, and observability concerns in optional modules.
-3. Add unit and interoperability tests for each transport.
-4. Run `mvn verify` and include the result in the pull request.
-5. Discuss the repository location and project naming with A2A maintainers before publication.
+## Development workflow
 
-The attached project requirements document is planning material; it is not a
-contributor instruction file and should not be treated as an upstream policy.
+- Open or find an issue before starting substantial work.
+- Fork the repository and create one short-lived branch per issue. Use `issue-<number>-<short-description>` (for example, `issue-123-task-history`).
+- Keep changes focused. Preserve protocol behavior in the official A2A Java SDK and keep Spring-specific integration behavior in this repository.
+- Add or update tests and documentation for behavior changes. Run `mvn --batch-mode --no-transfer-progress verify` and include relevant results in the pull request.
+- Link the issue in the pull request description and commit message. Use clear conventional commit messages.
+- Squash commits when merging unless several commits represent useful, independently understandable steps.
 
-For ecosystem listing, follow the official A2A Java integration process and
-include a project page, usage instructions, runnable sample, interoperability
-tests, and evidence of the official SDK compatibility.
+## Review and merge policy
 
-Use conventional commit messages and include a clear compatibility note when changing the supported A2A SDK version.
+All contributions to `main` must be submitted as pull requests. The repository maintainer, Soheil Qalamkari, reviews and approves contributor-authored pull requests. Authors must not approve their own pull requests. Do not merge until required checks pass and review conversations are resolved.
 
-## Branch and pull request workflow
+The maintainer's own pull requests also use the same branch and pull request workflow and must pass all required checks. Because the maintainer cannot review their own work, GitHub repository rules should allow the repository administrator to bypass only the required approval for a maintainer-authored pull request; this bypass must not be used for contributor pull requests.
 
-The `main` branch is release-facing and must not be used for direct
-development. Create one short-lived branch for each issue and merge it
-through a pull request.
+## Compatibility and scope
 
-Use the issue number followed by a short description:
-
-```text
-issue-123-short-description
-```
-
-Examples:
-
-```bash
-git switch -c issue-123-persistent-task-store
-git switch -c issue-124-sse-stream-close
-git switch -c issue-125-tck-evidence
-```
-
-Link the issue in both the pull request description and the commit message.
-Include tests and appropriate documentation. Squash commits before merging
-unless multiple meaningful commits are needed. When this repository has
-multiple maintainers, require review by at least one maintainer. While it has
-one maintainer, the pull request and required CI checks provide the review
-gate; the maintainer may merge after those checks pass.
-
-Pull requests targeting `main` must pass the Build workflow and the
-contribution-branch policy. Maintainers should enable branch protection
-requiring pull requests, a successful Build check, an up-to-date branch, and
-conversation resolution before merge.
+Include a compatibility note when changing the supported A2A Java SDK, Java, or Spring Boot versions. Keep unsupported capabilities and known limitations explicit in the documentation. Do not describe this community project as maintained by or officially endorsed by the A2A project.
