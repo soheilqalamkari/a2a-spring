@@ -17,7 +17,7 @@ Contributions are welcome through issues and pull requests. The project follows 
 
 All contributions to `main` must be submitted as pull requests. The repository maintainer, Soheil Qalamkari, reviews and approves contributor-authored pull requests. Authors must not approve their own pull requests. Do not merge until required checks pass and review conversations are resolved.
 
-The maintainer's own pull requests also use the same branch and pull request workflow and must pass all required checks. Because the maintainer cannot review their own work, GitHub repository rules should allow the repository administrator to bypass only the required approval for a maintainer-authored pull request; this bypass must not be used for contributor pull requests.
+The maintainer's own pull requests also use the same branch and pull request workflow and must pass all required checks. Because the maintainer cannot review their own work, the active `main-protection` ruleset allows the repository administrator to bypass its rules for pull requests. Use that bypass for maintainer-authored pull requests only, and still require all checks to pass. Never use the bypass for contributor pull requests.
 
 ## Compatibility and scope
 
