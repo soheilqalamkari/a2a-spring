@@ -1,11 +1,12 @@
 # Development workflow
 
-This repository uses feature-based development. `main` is the protected,
-release-facing branch; work is merged into it through pull requests.
+This repository uses feature-based development on top of the official A2A Java SDK. `main` is the protected, release-facing branch. All changes go through pull requests.
 
 ## Start work
 
-Update the local main branch before creating a branch for the issue:
+1. Open or find an issue and agree on the intended change.
+2. Fork the repository and update your local `main`.
+3. Create one short-lived branch for the issue, preferably named `issue-<number>-<short-description>`.
 
 ```bash
 git switch main
@@ -13,8 +14,7 @@ git pull --ff-only origin main
 git switch -c issue-123-short-description
 ```
 
-Use one short-lived branch per issue. The preferred convention is the issue
-number followed by a short description, for example `issue-123-spring-bean`.
+Keep each pull request focused on one issue. Link the issue in the pull request description and commit message. Include tests and documentation for behavior changes.
 
 ## Commit and publish
 
@@ -24,27 +24,12 @@ git commit -m "feat: describe the change (#123)"
 git push --set-upstream origin issue-123-short-description
 ```
 
-Open a pull request from the issue branch to `main`, link the issue in the
-description, and include tests and documentation. Squash the commits before
-merge unless the change is large enough to justify multiple meaningful
-commits. The branch policy and Build workflows must pass before merge.
+Open a pull request targeting `main`. The Build and contribution-branch checks must pass, all review conversations must be resolved, and a repository maintainer must approve contributor-authored changes. Squash commits when merging unless multiple meaningful commits are useful.
 
-## Repository protection
+## Main branch rules
 
-GitHub repository settings should require the following for `main`:
+The active `main-protection` ruleset targets `main` and requires pull requests, one approval, the `Build / build` and `Branch policy / Validate contribution branch` checks, an up-to-date branch, and resolved conversations. It blocks force pushes and branch deletion.
 
-- pull requests instead of direct pushes;
-- the `Build / build` and `Branch policy / Validate contribution branch` checks;
-- conversation resolution;
-- an up-to-date branch before merging;
-- no force pushes or branch deletion.
+The repository currently has one maintainer, Soheil Qalamkari. Contributor-authored pull requests require the maintainer's approval. Maintainer-authored pull requests must still pass the same checks and use a pull request; because the author cannot approve their own change, the repository administrator may use the ruleset's pull-request-only bypass on a maintainer-authored pull request. The maintainer must still verify that all required checks pass. Never use the bypass for contributor pull requests.
 
-Because this repository currently has one maintainer, approval requirements
-should remain disabled here. The maintainer may merge after the pull request
-checks pass. Any future additional maintainer can be added as a required
-reviewer. The separate upstream A2A Java integration pull request still
-requires review by an A2A project committer.
-
-The GitHub settings are administrative state and must be enabled by a
-repository administrator; the workflow in this repository provides the
-version-controlled part of the policy.
+The separate upstream A2A Java integration listing was accepted in [A2A Java PR #1201](https://github.com/a2aproject/a2a-java/pull/1201). This local policy governs this repository; it does not replace A2A Java's own contribution and review process.

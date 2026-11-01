@@ -1,19 +1,13 @@
-# Upstream submission checklist
+# Upstream integration listing
 
-This is a handoff checklist for the official A2A Java project. It is not a
-claim that this repository is already part of the official organization.
+The A2A Java maintainers accepted [PR #1201](https://github.com/a2aproject/a2a-java/pull/1201), which added A2A Spring to the SDK's [server integrations list](https://github.com/a2aproject/a2a-java/blob/main/docs/content/dev/server.md#server-integrations). The PR was merged on 2026-10-28.
 
-1. Create or confirm the public repository URL and update the root POM SCM
-   metadata.
-2. Push the local `main` commit and publish the sample and documentation.
-3. Confirm the selected Maven Central namespace and publish a non-SNAPSHOT
-   milestone if maintainers want an artifact link.
-4. Open an upstream proposal or pull request following
-   [CONTRIBUTING_INTEGRATIONS.md](https://github.com/a2aproject/a2a-java/blob/main/CONTRIBUTING_INTEGRATIONS.md).
-5. Include the repository/project page, dependency coordinates, usage steps,
-   sample link, compatibility matrix, and interoperability test evidence.
-   Include the TCK report once the conformance scaffold is enabled and passes.
-6. Ask maintainers whether the integration should be listed in the Java SDK
-   README, the A2A website, or both.
-7. Do not describe the repository as official until the upstream review is
-   accepted.
+## What the listing means
+
+The listing points users to this project's page and helps them discover a community-maintained integration. The repository remains hosted and maintained independently at [soheilqalamkari/a2a-spring](https://github.com/soheilqalamkari/a2a-spring). The listing does not move the project into the A2A organization, incorporate its code into the A2A Java SDK, or imply A2A project maintenance or endorsement.
+
+## Ongoing project contribution requirements
+
+This repository maintains its own contribution process. Changes are proposed as focused pull requests with tests, documentation, and maintainer review. See [CONTRIBUTING.md](../CONTRIBUTING.md) and [development workflow](development-workflow.md).
+
+For future changes to the A2A Java integration listing, follow the current upstream [integration contribution instructions](https://github.com/a2aproject/a2a-java/blob/main/CONTRIBUTING_INTEGRATIONS.md). Coordinate upstream documentation changes with A2A maintainers and provide a project page, usage instructions, test information, TCK evidence where applicable, and build or release instructions.

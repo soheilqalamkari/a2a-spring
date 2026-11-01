@@ -1,12 +1,12 @@
 # A2A Spring Boot
 
-Spring-native integration for the [official A2A Java SDK](https://github.com/a2aproject/a2a-java).
+A community-maintained Spring Boot integration for the [official A2A Java SDK](https://github.com/a2aproject/a2a-java), now listed in the SDK's [server integrations](https://github.com/a2aproject/a2a-java/blob/main/docs/content/dev/server.md#server-integrations).
 
 This project provides the foundation for running an A2A agent in a Spring Boot application. It keeps protocol behavior in the official SDK and focuses on Spring Boot conventions: auto-configuration, typed properties, dependency injection, and transport adapters.
 
 ## Current status
 
-This is an early MVP foundation. It currently provides:
+The integration is listed in the A2A Java SDK ecosystem. The project remains an early MVP foundation and currently provides:
 
 - `a2a-spring-core` with typed properties and Spring `Environment` configuration;
 - `a2a-spring-boot-autoconfigure` with agent-card and executor discovery;
@@ -14,7 +14,7 @@ This is an early MVP foundation. It currently provides:
 - `a2a-spring-boot-starter-web` with Spring MVC JSON-RPC hosting;
 - a runnable `samples/hello-world` application.
 
-The web starter exposes `GET /.well-known/agent-card.json` and `POST /a2a` for JSON-RPC requests, including `message/send`, task operations, push-configuration operations, and SSE-based `message/stream`. Official-client interoperability tests pass, and the advertised JSON-RPC interface passes the applicable TCK checks; see [TCK conformance](docs/tck.md) for scope and remaining upstream requirements.
+The web starter exposes `GET /.well-known/agent-card.json` and `POST /a2a` for JSON-RPC requests, including `message/send`, task operations, push-configuration operations, and SSE-based `message/stream`. Official-client interoperability tests pass, and the advertised JSON-RPC interface passes the applicable TCK checks; see [TCK conformance](docs/tck.md) for scope and remaining requirements.
 
 Documentation:
 
@@ -24,8 +24,8 @@ Documentation:
 - [Compatibility](docs/compatibility.md)
 - [TCK conformance](docs/tck.md)
 - [Release process](docs/releasing.md)
-- [Maintainer proposal](docs/maintainer-proposal.md)
-- [Upstream submission checklist](docs/upstream-submission.md)
+- [Project and upstream status](docs/maintainer-proposal.md)
+- [Upstream integration listing](docs/upstream-submission.md)
 - [Development workflow](docs/development-workflow.md)
 
 ## Quick start
@@ -84,11 +84,10 @@ mvn verify
 
 ## Project direction
 
-The planned modules are documented in the project requirements. The next increments are WebFlux, security, observability, persistence, push notification delivery, and official TCK coverage as separate, focused modules.
+The planned modules are documented in the project requirements. The next increments are WebFlux, security, observability, persistence, push notification delivery, and expanded TCK coverage as separate, focused modules.
 
-## Contributing and publication
+## Project status and relationship to A2A Java
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). This is an independent project prepared
-for proposal to the A2A maintainers. Publication to the official A2A GitHub
-organization and A2A documentation site requires maintainer review and an
-accepted upstream pull request; this repository does not claim official status.
+The A2A Java maintainers accepted [PR #1201](https://github.com/a2aproject/a2a-java/pull/1201), adding this project to the SDK's server integration list. This is a community integration developed and maintained in this repository. The listing does not transfer the repository to the A2A organization, make this code part of the `a2a-java` codebase, or imply that the A2A project maintains or endorses this repository.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose changes. Contributions are welcome through pull requests and are reviewed by the repository maintainer.
