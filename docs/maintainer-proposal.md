@@ -1,51 +1,17 @@
-# Proposal: Spring Boot integration for the official A2A Java SDK
+# Project status and relationship to A2A Java
 
-## Summary
+The Spring integration was added to the A2A Java SDK's [server integrations list](https://github.com/a2aproject/a2a-java/blob/main/docs/content/dev/server.md#server-integrations) in [A2A Java PR #1201](https://github.com/a2aproject/a2a-java/pull/1201). That pull request was merged on 2026-10-28.
 
-This repository provides a Spring Boot integration for the official A2A Java
-SDK. It keeps protocol models and request handling in the SDK and adds Spring
-Boot auto-configuration, `@ConfigurationProperties`, Spring bean discovery,
-and a Spring MVC JSON-RPC adapter.
+## Project ownership
 
-## Motivation
+A2A Spring is a community-maintained integration hosted in this repository. Its upstream listing helps users discover it; it does not transfer ownership to the A2A organization, make its code part of the A2A Java SDK, or mean that A2A maintainers maintain or endorse this repository.
 
-Spring Boot is widely used for Java services, but Spring applications currently
-need to understand SDK-specific server bootstrap and CDI-oriented wiring to
-expose an A2A agent. This integration makes the basic path a normal Spring
-application: add a starter, register an `AgentExecutor` bean, and configure an
-Agent Card.
+The official A2A Java SDK remains the source of protocol implementation. This repository provides Spring Boot integration and maintains its own issues, pull requests, releases, and support.
 
-## Current MVP
+## Current scope
 
-- official A2A Java SDK `1.4.0.Final` as the protocol implementation;
-- Java 17 and Spring Boot 3.5 baseline;
-- typed `a2a.*` properties and Spring `Environment` configuration;
-- conditional Boot auto-configuration and executor discovery;
-- Agent Card endpoint at `/.well-known/agent-card.json`;
-- Spring MVC JSON-RPC endpoint at `/a2a`;
-- support for both the protocol-style `message/send` and the official Java
-  client's `SendMessage` operation name;
-- runnable hello-world sample;
-- Spring context, endpoint, auto-configuration, and official-client HTTP tests;
-- source/Javadoc/signing/Central Portal release preparation.
+The project currently targets Java 17 and Spring Boot 3.5 and provides Spring Boot auto-configuration, Agent Card hosting, a Spring MVC JSON-RPC endpoint, a runnable sample, and interoperability/conformance documentation. See [compatibility](compatibility.md), [server behavior](server.md), and [TCK conformance](tck.md) for current details and limitations.
 
-## Scope boundaries
+## Contributions
 
-The MVP intentionally does not claim WebFlux, authentication, persistence,
-push notification delivery, observability, or Spring AI support.
-Those can be added as separate modules after maintainers agree on the API and
-compatibility boundary.
-
-## Hosting question
-
-Please advise whether the integration should remain an independent community
-repository or move under the A2A organization. The current local coordinates
-and SCM metadata use `github.com/soheilqalamkari/a2a-spring` and
-`io.github.soheilghalamkari` provisionally; they should be changed if the
-maintainers prefer another repository or namespace.
-
-## Evidence
-
-The complete Maven reactor passes with the official client interoperability
-test enabled. The sample and setup instructions are in the README and
-`docs/getting-started.md`.
+Contributions are welcome through issues and pull requests. See [CONTRIBUTING.md](../CONTRIBUTING.md) for the feature-branch workflow, tests, and maintainer review policy.
