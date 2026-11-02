@@ -46,11 +46,12 @@ The current line is an early preview, not a stable release.
 - Ensure push-notification capability declarations match tested behavior.
   Either test working delivery or leave the capability disabled and document
   it as unsupported.
-- Run the official JSON-RPC TCK in CI and retain downloadable JSON, HTML, and
-  JUnit reports together with the exact SDK, Java, Spring Boot, and TCK
-  revisions. The workflow is configured; a passing run is still required.
-- Reconcile historical TCK summaries before publishing pass rates. Report
-  applicable, skipped, unsupported, and untested checks separately.
+- The MUST-level JSON-RPC TCK workflow passed and its JSON, HTML, and JUnit
+  reports are downloadable. The latest report shows 67 MUST requirements
+  passing, 25 skipped, and 22 not tested (75.3% MUST compatibility). Keep the
+  SDK, Java, Spring Boot, and TCK versions and revision with each report.
+- Track remaining skipped and not-tested requirements explicitly; a successful
+  workflow exit does not mean every TCK requirement passed.
 
 ### 0.3.0 — Spring production foundations
 
@@ -99,7 +100,7 @@ Spring ecosystem integrations.
 ## Current baseline
 
 The repository remains on `0.1.0-SNAPSHOT`. The official abstract server test
-contract now passes on the development branch. The JSON-RPC TCK still needs a
-successful CI run and review of its downloadable report before making a TCK
-conformance claim. Maven Central publication and a clean-consumer resolution
-check remain release work.
+contract passes, and the MUST-level JSON-RPC TCK workflow has produced a
+downloadable report. The TCK evidence remains partial because some checks are
+skipped or not tested. Maven Central publication and a clean-consumer
+resolution check remain release work.

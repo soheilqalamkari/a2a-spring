@@ -7,11 +7,9 @@ not advertised by this integration must be reported separately from applicable
 checks.
 
 The repository includes `A2ASpringAbstractServerTest`, which extends the
-official `AbstractA2AServerTest`. It is enabled and currently passes all 54
-cases with zero failures, errors, or skips on the development branch. This is
-evidence for the SDK server-test contract; it does not establish full TCK
-conformance. Push delivery can only be advertised when an application
-provides a sender and explicitly enables it.
+official `AbstractA2AServerTest`. It is enabled and passes all 54 cases with
+zero failures, errors, or skips. Push delivery can only be advertised when an
+application provides a sender and explicitly enables it.
 
 ## Local verification command
 
@@ -47,9 +45,23 @@ The [TCK workflow](../.github/workflows/tck.yml) runs the
 Maven verification suite, starts the hello-world server, executes the official
 JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
-The workflow is evidence of a pass only if it completed successfully and its
-report shows the applicable checks passing. The TCK has not yet been run on
-this development branch, so no TCK pass claim is made here.
+### Latest CI evidence
+
+The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41416387895)
+completed successfully for PR head `49dae10b1742f4146662522080307391407c8205`.
+Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41416387895/artifacts/13127044413)
+for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.4.0.Final`,
+Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.17`, and
+TCK commit `d4d6fae7887f88ef607fb461c13e3b0e1802f19b`.
+
+The JUnit report contains 235 cases: 80 passed, 155 skipped, 0 failures, and
+0 errors. The compatibility report records 67 MUST requirements as PASS, 25
+as SKIPPED, and 22 as NOT TESTED. It reports 75.3% MUST compatibility and
+64.4% overall compatibility. Skips include unsupported HTTP+JSON/gRPC
+transports and capability-dependent checks, including push notifications
+which the sample does not advertise. NOT TESTED items are not passes. This is
+a successful MUST-level JSON-RPC workflow run, not a claim that every TCK
+requirement is implemented or that full protocol conformance is complete.
 
 The workflow runs for pull requests, updates to `main`, and manual dispatch.
 Report unsupported and non-applicable capabilities separately. Never describe
