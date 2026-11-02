@@ -90,9 +90,10 @@ passes, and they prevent a full conformance claim:
 
 | Entries | Scope assessment |
 | --- | --- |
-| `CARD-SIGN-001`–`CARD-SIGN-004` | Agent Card JCS/JWS signing is not implemented or advertised; signing behavior remains unverified. |
-| `AUTH-TLS-001`, `AUTH-SERVER-002`, `AUTH-INTASK-001`–`AUTH-INTASK-004`, `AUTH-SCOPE-001`–`AUTH-SCOPE-003` | Security and authorization are not provided by this starter. Production TLS and request authentication must be supplied by deployment/application configuration; in-task authorization behavior remains unverified. |
-| `VER-CLIENT-001`, `VER-SERVER-001`, `VER-CLIENT-002` | Request-version signaling and version negotiation semantics were not tested. The report separately marks unsupported-version and empty-version probes as passing, but that does not cover these entries. |
+| `CARD-SIGN-001`–`CARD-SIGN-004` | Agent Card signing is not implemented or advertised by this sample; signing-specific behavior is conditional and remains unverified. |
+| `AUTH-TLS-001`, `AUTH-SERVER-002`, `AUTH-INTASK-001`–`AUTH-INTASK-004`, `AUTH-SCOPE-001`–`AUTH-SCOPE-003` | These checks need a secured deployment or an agent that declares and exercises authentication/authorization requirements. The sample declares no security schemes. Production TLS and any required request authentication must be supplied by deployment/application configuration; in-task authorization behavior remains unverified. |
+| `VER-CLIENT-001`, `VER-CLIENT-002` | Client-side requirements; this server integration does not implement an A2A client. |
+| `VER-SERVER-001` | Server version-semantics behavior is relevant to JSON-RPC but was not tested. The report separately marks unsupported-version and empty-version probes as passing; those do not cover processing requests using the requested version's semantics. Track this before claiming full JSON-RPC conformance. |
 | `BIND-EQUIV-001`–`BIND-EQUIV-004` | Multi-binding equivalence is not applicable while JSON-RPC is the only supported transport. |
 | `HTTP_JSON-SVC-001`, `GRPC-SVC-003` | Binding-specific requirements for unsupported transports; out of current scope. |
 
