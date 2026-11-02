@@ -49,9 +49,9 @@ jobs:
         run: |
           mvn --batch-mode --no-transfer-progress \
             -pl samples/hello-world -am \
-            spring-boot:run \
-            -Dspring-boot.run.arguments=--server.port=8080 \
-            > reports/server.log 2>&1 &
+            -DskipTests package
+          java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.1.0-SNAPSHOT.jar \
+            --server.port=8080 > reports/server.log 2>&1 &
           echo $! > server.pid
           for attempt in $(seq 1 60); do
             if curl --fail --silent http://127.0.0.1:8080/.well-known/agent-card.json > /dev/null; then

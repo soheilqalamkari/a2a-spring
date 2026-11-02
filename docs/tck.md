@@ -18,6 +18,13 @@ provides a sender and explicitly enables it.
 The TCK requires Python 3.11+ and `uv`:
 
 ```bash
+mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.1.0-SNAPSHOT.jar --server.port=8080
+```
+
+With the sample server running, use another terminal:
+
+```bash
 git clone https://github.com/a2aproject/a2a-tck.git ../a2a-tck
 cd ../a2a-tck
 uv venv
