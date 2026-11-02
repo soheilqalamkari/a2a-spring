@@ -47,9 +47,9 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41416387895)
-completed successfully for PR head `49dae10b1742f4146662522080307391407c8205`.
-Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41416387895/artifacts/13127044413)
+The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41424301793)
+completed successfully for PR head `c336fbacebb07b8737c36735f06d5f35dbc0a067`.
+Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41424301793/artifacts/13132150234)
 for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.4.0.Final`,
 Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.17`, and
 TCK commit `d4d6fae7887f88ef607fb461c13e3b0e1802f19b`.
@@ -79,12 +79,14 @@ The JUnit report also contains skipped test cases beyond the 25
 requirement-level entries. Most are parameterized checks for HTTP+JSON/gRPC or
 capabilities the sample does not advertise. One JSON-RPC case was a genuine
 gap: `test_returns_message_with_text_part[jsonrpc]` was skipped after the
-sample agent threw `Cannot update task status - terminal state already
-reached`, and the request timed out. The sample's message-only response path
-emitted a message and then redundantly completed the task. That path has been
-corrected in the PR branch to emit the expected direct message and return;
-the updated TCK run must confirm this case passes before treating it as
-resolved.
+sample's message-only response request timed out. The earlier artifact's
+server log showed that the sample emitted a message and then redundantly
+completed a terminal task. A first correction removed the duplicate
+completion, but the follow-up run still timed out because the sample had
+already submitted a task before taking the message-only path. The current PR
+branch now handles that path before task creation and returns the expected
+direct message. A new TCK run must confirm the case passes before treating
+this gap as resolved.
 
 The 22 MUST requirements marked NOT TESTED are grouped here. These are not
 passes, and they prevent a full conformance claim:
