@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.a2aproject.sdk.server.agentexecution.AgentExecutor;
 import org.a2aproject.sdk.server.agentexecution.RequestContext;
 import org.a2aproject.sdk.server.tasks.AgentEmitter;
+import org.a2aproject.sdk.server.tasks.PushNotificationSender;
 import io.a2aspring.core.A2ARuntime;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -39,11 +40,26 @@ class A2AAutoConfigurationTest {
     }
 
     @Test
-    void enablesPushNotificationsOnlyWhenConfigured() {
+    void doesNotAdvertisePushNotificationsWithoutApplicationSender() {
         contextRunner.withUserConfiguration(ExecutorConfiguration.class)
                 .withPropertyValues("a2a.server.push-notifications-enabled=true")
                 .run(context -> assertThat(context.getBean(A2ARuntime.class).agentCard()
+                        .capabilities().pushNotifications()).isFalse());
+    }
+
+    @Test
+    void advertisesPushNotificationsWhenEnabledWithApplicationSender() {
+        contextRunner.withUserConfiguration(ExecutorConfiguration.class, PushSenderConfiguration.class)
+                .withPropertyValues("a2a.server.push-notifications-enabled=true")
+                .run(context -> assertThat(context.getBean(A2ARuntime.class).agentCard()
                         .capabilities().pushNotifications()).isTrue());
+    }
+
+    @Test
+    void rejectsUnsupportedTransportConfiguration() {
+        contextRunner.withUserConfiguration(ExecutorConfiguration.class)
+                .withPropertyValues("a2a.server.transport=GRPC")
+                .run(context -> assertThat(context).hasFailed());
     }
 
     @Configuration(proxyBeanMethods = false)
@@ -51,6 +67,14 @@ class A2AAutoConfigurationTest {
         @Bean
         AgentExecutor agentExecutor() {
             return (RequestContext context, AgentEmitter emitter) -> { };
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class PushSenderConfiguration {
+        @Bean
+        PushNotificationSender pushNotificationSender() {
+            return (eventKind, task) -> { };
         }
     }
 }

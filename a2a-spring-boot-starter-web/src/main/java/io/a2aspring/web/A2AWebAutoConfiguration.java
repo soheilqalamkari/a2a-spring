@@ -26,6 +26,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
@@ -79,12 +80,21 @@ public class A2AWebAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
+    @ConditionalOnMissingBean(PushNotificationSender.class)
+    @ConditionalOnProperty(prefix = "a2a.server", name = "push-notifications-enabled",
+            havingValue = "false", matchIfMissing = true)
     PushNotificationSender a2aPushNotificationSender() {
         return (eventKind, task) -> {
-            // Push notification delivery is intentionally disabled until a Spring-configurable
-            // PushNotificationSender is provided by the application.
+            // A safe default when push notifications are disabled.
         };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(PushNotificationSender.class)
+    @ConditionalOnProperty(prefix = "a2a.server", name = "push-notifications-enabled", havingValue = "true")
+    PushNotificationSender a2aRequirePushNotificationSender() {
+        throw new IllegalStateException("Push notifications are enabled, but no application "
+                + "PushNotificationSender bean is configured");
     }
 
     @Bean

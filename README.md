@@ -14,7 +14,14 @@ The integration is listed in the A2A Java SDK ecosystem. The project remains an 
 - `a2a-spring-boot-starter-web` with Spring MVC JSON-RPC hosting;
 - a runnable `samples/hello-world` application.
 
-The web starter exposes `GET /.well-known/agent-card.json` and `POST /a2a` for JSON-RPC requests, including `message/send`, task operations, push-configuration operations, and SSE-based `message/stream`. Official-client interoperability tests are included; see [TCK conformance](docs/tck.md) for verified results, scope, and remaining requirements.
+The web starter supports Spring MVC with JSON-RPC at `POST /a2a`, Agent
+Card discovery at `GET /.well-known/agent-card.json`, and SSE for streaming
+methods. The Agent Card advertises only JSON-RPC. Push-notification
+configuration APIs are provided by the SDK, but delivery is disabled unless
+the application supplies a `PushNotificationSender` and explicitly enables
+the feature. Official-client interoperability tests are included; see
+[TCK conformance](docs/tck.md) for verified results, scope, and remaining
+requirements.
 
 Documentation:
 
@@ -73,7 +80,8 @@ The starter uses in-memory task and queue implementations by default. Replace
 the SDK `TaskStore`, `TaskStateProvider`, `QueueManager`,
 `PushNotificationConfigStore`, or `PushNotificationSender` with Spring beans
 when an application needs custom storage or delivery. Push notifications stay
-disabled unless `a2a.server.push-notifications-enabled` is set to `true`.
+disabled by default. Enabling the property also requires an application-provided
+`PushNotificationSender`; startup fails if delivery is enabled without one.
 
 ## Build
 

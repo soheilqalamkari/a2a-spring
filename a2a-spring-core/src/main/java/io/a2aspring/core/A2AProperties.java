@@ -39,7 +39,11 @@ public class A2AProperties {
         public void setEnabled(boolean enabled) { this.enabled = enabled; }
         public String getTransport() { return transport; }
         public void setTransport(String transport) {
-            this.transport = transport == null ? null : transport.toUpperCase(Locale.ROOT);
+            if (transport == null || !"JSONRPC".equals(transport.toUpperCase(Locale.ROOT))) {
+                throw new IllegalArgumentException(
+                        "Only the JSONRPC transport is supported by the Spring MVC starter");
+            }
+            this.transport = "JSONRPC";
         }
 
         public boolean isPushNotificationsEnabled() { return pushNotificationsEnabled; }

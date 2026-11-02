@@ -55,7 +55,13 @@ The default task and queue infrastructure is in memory. Applications can
 replace the official SDK `TaskStore`, `TaskStateProvider`, `QueueManager`,
 `PushNotificationConfigStore`, and `PushNotificationSender` contracts with
 Spring beans. Push notification delivery must be explicitly enabled and the
-application must provide the outbound sender implementation.
+application must provide the outbound sender implementation. If delivery is
+enabled without a `PushNotificationSender` bean, startup fails. The Agent Card
+does not advertise push notifications unless both requirements are met.
+
+The 0.1.x web starter supports `JSONRPC`; other values of
+`a2a.server.transport` are rejected. WebFlux, HTTP+JSON, and gRPC are not
+supported by this release line.
 
 Run the sample with:
 

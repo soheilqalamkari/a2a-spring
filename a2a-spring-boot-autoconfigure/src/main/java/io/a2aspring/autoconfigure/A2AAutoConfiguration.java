@@ -4,12 +4,14 @@ import java.util.List;
 import org.a2aproject.sdk.server.agentexecution.AgentExecutor;
 import org.a2aproject.sdk.server.config.A2AConfigProvider;
 import org.a2aproject.sdk.server.config.DefaultValuesConfigProvider;
+import org.a2aproject.sdk.server.tasks.PushNotificationSender;
 import org.a2aproject.sdk.spec.AgentCapabilities;
 import org.a2aproject.sdk.spec.AgentCard;
 import org.a2aproject.sdk.spec.AgentInterface;
 import io.a2aspring.core.A2AProperties;
 import io.a2aspring.core.A2ARuntime;
 import io.a2aspring.core.SpringEnvironmentA2AConfigProvider;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -36,14 +38,17 @@ public class A2AAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public AgentCard a2aAgentCard(A2AProperties properties) {
+    public AgentCard a2aAgentCard(A2AProperties properties,
+                                 ObjectProvider<PushNotificationSender> pushNotificationSenders) {
+        boolean pushNotificationsEnabled = properties.getServer().isPushNotificationsEnabled()
+                && pushNotificationSenders.getIfAvailable() != null;
         return AgentCard.builder()
                 .name(properties.getAgent().getName())
                 .description(properties.getAgent().getDescription())
                 .version(properties.getAgent().getVersion())
                 .capabilities(AgentCapabilities.builder()
                         .streaming(true)
-                        .pushNotifications(properties.getServer().isPushNotificationsEnabled())
+                        .pushNotifications(pushNotificationsEnabled)
                         .extensions(List.of())
                         .build())
                 .defaultInputModes(List.of("text"))

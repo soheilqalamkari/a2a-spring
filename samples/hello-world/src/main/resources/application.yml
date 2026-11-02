@@ -7,3 +7,4 @@ a2a:
   server:
     enabled: true
     transport: JSONRPC
+    push-notifications-enabled: false
