@@ -20,8 +20,8 @@ methods. The Agent Card advertises only JSON-RPC. Push-notification
 configuration APIs are provided by the SDK, but delivery is disabled unless
 the application supplies a `PushNotificationSender` and explicitly enables
 the feature. The official `AbstractA2AServerTest` passes all 54 cases on the
-current development branch; the TCK still needs a successful CI run. Official-
-tests using the official Java client are included; see
+current development branch; the TCK still needs a successful CI run. Tests
+using the official Java client are included; see
 [TCK conformance](docs/tck.md) for verified results, scope, and remaining
 requirements.
 
