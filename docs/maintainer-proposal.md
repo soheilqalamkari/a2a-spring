@@ -10,7 +10,7 @@ The official A2A Java SDK remains the source of protocol implementation. This re
 
 ## Current scope
 
-The 0.1.x preview targets Java 17+, Spring Boot 3.5.x, and A2A Java SDK 1.4.0.Final. It provides auto-configuration, Agent Card discovery, a Spring MVC JSON-RPC endpoint with SSE streaming, a runnable sample, and Java-client interoperability coverage. The official `AbstractA2AServerTest` remains disabled and full TCK conformance is not claimed at this milestone. See [compatibility](compatibility.md), [server behavior](server.md), and [TCK conformance](tck.md) for supported behavior and limitations.
+The project targets Java 17+, Spring Boot 3.5.x, and A2A Java SDK 1.4.0.Final. It provides auto-configuration, Agent Card discovery, a Spring MVC JSON-RPC endpoint with SSE streaming, a runnable sample, and Java-client interoperability coverage. The official `AbstractA2AServerTest` passes all 54 cases on the current development branch. The JSON-RPC TCK has not yet been run successfully on this branch. See [compatibility](compatibility.md), [server behavior](server.md), and [TCK conformance](tck.md) for verified behavior and remaining work.
 
 ## Contributions
 

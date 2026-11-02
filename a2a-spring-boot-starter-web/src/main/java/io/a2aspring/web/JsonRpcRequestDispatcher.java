@@ -22,7 +22,9 @@ import org.a2aproject.sdk.jsonrpc.common.wrappers.SendStreamingMessageResponse;
 import org.a2aproject.sdk.jsonrpc.common.wrappers.SubscribeToTaskRequest;
 import org.a2aproject.sdk.server.ServerCallContext;
 import org.a2aproject.sdk.spec.CancelTaskParams;
+import org.a2aproject.sdk.spec.DeleteTaskPushNotificationConfigParams;
 import org.a2aproject.sdk.spec.ListTasksParams;
+import org.a2aproject.sdk.spec.ListTaskPushNotificationConfigsParams;
 import org.a2aproject.sdk.spec.TaskIdParams;
 import org.a2aproject.sdk.spec.TaskState;
 import org.a2aproject.sdk.transport.jsonrpc.handler.JSONRPCHandler;
@@ -54,11 +56,9 @@ public final class JsonRpcRequestDispatcher {
                     handler.getPushNotificationConfig(
                             JsonUtil.fromJson(request, GetTaskPushNotificationConfigRequest.class), context);
             case "tasks/pushNotificationConfig/list", "ListTaskPushNotificationConfigs" ->
-                    handler.listPushNotificationConfigs(
-                            JsonUtil.fromJson(request, ListTaskPushNotificationConfigsRequest.class), context);
+                    handler.listPushNotificationConfigs(listPushNotificationConfigsRequest(root), context);
             case "tasks/pushNotificationConfig/delete", "DeleteTaskPushNotificationConfig" ->
-                    handler.deletePushNotificationConfig(
-                            JsonUtil.fromJson(request, DeleteTaskPushNotificationConfigRequest.class), context);
+                    handler.deletePushNotificationConfig(deletePushNotificationConfigRequest(root), context);
             case "agent/card", "GetExtendedAgentCard" -> handler.onGetExtendedCardRequest(
                     JsonUtil.fromJson(request, GetExtendedAgentCardRequest.class), context);
             default -> methodNotFound(root, method);
@@ -117,21 +117,55 @@ public final class JsonRpcRequestDispatcher {
 
     private ListTasksRequest listTasksRequest(JsonObject root) {
         JsonObject params = params(root);
-        ListTasksParams.Builder builder = ListTasksParams.builder()
-                .contextId(requiredString(params, "context_id"));
-        optionalString(params, "tenant", builder::tenant);
-        optionalString(params, "page_token", builder::pageToken);
-        optionalInteger(params, "page_size", builder::pageSize);
-        optionalInteger(params, "history_length", builder::historyLength);
-        optionalBoolean(params, "include_artifacts", builder::includeArtifacts);
-        optionalString(params, "status_timestamp_after",
-                value -> builder.statusTimestampAfter(Instant.parse(value)));
-        optionalString(params, "status", value -> builder.status(TaskState.valueOf(value)));
+        ListTasksParams.Builder builder = ListTasksParams.builder();
+        optionalNonBlankString(params, builder::contextId, "context_id", "contextId");
+        optionalString(params, builder::tenant, "tenant");
+        optionalNonBlankString(params, builder::pageToken, "page_token", "pageToken");
+        optionalInteger(params, builder::pageSize, "page_size", "pageSize");
+        optionalInteger(params, builder::historyLength, "history_length", "historyLength");
+        optionalBoolean(params, builder::includeArtifacts, "include_artifacts", "includeArtifacts");
+        optionalNonBlankString(params, value -> {
+            Instant timestamp = Instant.parse(value);
+            if (!Instant.EPOCH.equals(timestamp)) {
+                builder.statusTimestampAfter(timestamp);
+            }
+        }, "status_timestamp_after", "statusTimestampAfter");
+        optionalNonBlankString(params, value -> {
+            TaskState status = taskState(value);
+            if (status != TaskState.TASK_STATE_UNSPECIFIED) {
+                builder.status(status);
+            }
+        }, "status");
         return ListTasksRequest.builder()
                 .jsonrpc(jsonrpc(root))
                 .id(requestId(root))
                 .params(builder.build())
                 .build();
+    }
+
+    private ListTaskPushNotificationConfigsRequest listPushNotificationConfigsRequest(JsonObject root) {
+        JsonObject params = params(root);
+        ListTaskPushNotificationConfigsParams.Builder builder = ListTaskPushNotificationConfigsParams.builder()
+                .id(firstString(params, "taskId", "task_id", "id"));
+        optionalInteger(params, value -> {
+            if (value > 0) {
+                builder.pageSize(value);
+            }
+        }, "pageSize", "page_size");
+        optionalNonBlankString(params, builder::pageToken, "pageToken", "page_token");
+        optionalString(params, builder::tenant, "tenant");
+        return ListTaskPushNotificationConfigsRequest.builder()
+                .jsonrpc(jsonrpc(root)).id(requestId(root)).params(builder.build()).build();
+    }
+
+    private DeleteTaskPushNotificationConfigRequest deletePushNotificationConfigRequest(JsonObject root) {
+        JsonObject params = params(root);
+        DeleteTaskPushNotificationConfigParams.Builder builder = DeleteTaskPushNotificationConfigParams.builder()
+                .taskId(firstString(params, "taskId", "task_id"));
+        optionalNonBlankString(params, builder::id, "id");
+        optionalString(params, builder::tenant, "tenant");
+        return DeleteTaskPushNotificationConfigRequest.builder()
+                .jsonrpc(jsonrpc(root)).id(requestId(root)).params(builder.build()).build();
     }
 
     private SubscribeToTaskRequest subscribeToTaskRequest(JsonObject root) {
@@ -160,6 +194,34 @@ public final class JsonRpcRequestDispatcher {
         return object.get(name).getAsString();
     }
 
+    private String firstString(JsonObject object, String... names) {
+        for (String name : names) {
+            if (object.has(name) && !object.get(name).isJsonNull()) {
+                return object.get(name).getAsString();
+            }
+        }
+        return null;
+    }
+
+    private void optionalString(JsonObject object, java.util.function.Consumer<String> consumer,
+                                String... names) {
+        for (String name : names) {
+            if (object.has(name) && !object.get(name).isJsonNull()) {
+                consumer.accept(object.get(name).getAsString());
+                return;
+            }
+        }
+    }
+
+    private void optionalNonBlankString(JsonObject object, java.util.function.Consumer<String> consumer,
+                                        String... names) {
+        optionalString(object, value -> {
+            if (!value.isBlank()) {
+                consumer.accept(value);
+            }
+        }, names);
+    }
+
     private void optionalString(JsonObject object, String name, java.util.function.Consumer<String> consumer) {
         if (object.has(name) && !object.get(name).isJsonNull()) {
             consumer.accept(object.get(name).getAsString());
@@ -172,10 +234,38 @@ public final class JsonRpcRequestDispatcher {
         }
     }
 
+    private void optionalInteger(JsonObject object, java.util.function.Consumer<Integer> consumer,
+                                 String... names) {
+        for (String name : names) {
+            if (object.has(name) && !object.get(name).isJsonNull()) {
+                consumer.accept(object.get(name).getAsInt());
+                return;
+            }
+        }
+    }
+
     private void optionalBoolean(JsonObject object, String name, java.util.function.Consumer<Boolean> consumer) {
         if (object.has(name) && !object.get(name).isJsonNull()) {
             consumer.accept(object.get(name).getAsBoolean());
         }
+    }
+
+    private void optionalBoolean(JsonObject object, java.util.function.Consumer<Boolean> consumer,
+                                 String... names) {
+        for (String name : names) {
+            if (object.has(name) && !object.get(name).isJsonNull()) {
+                consumer.accept(object.get(name).getAsBoolean());
+                return;
+            }
+        }
+    }
+
+    private TaskState taskState(String value) {
+        String normalized = value.toUpperCase(java.util.Locale.ROOT);
+        if (!normalized.startsWith("TASK_STATE_")) {
+            normalized = "TASK_STATE_" + normalized;
+        }
+        return TaskState.valueOf(normalized);
     }
 
     private String jsonrpc(JsonObject root) {

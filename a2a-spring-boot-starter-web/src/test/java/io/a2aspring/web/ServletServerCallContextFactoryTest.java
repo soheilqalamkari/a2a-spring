@@ -21,7 +21,8 @@ class ServletServerCallContextFactoryTest {
         assertThat(context.getUser().getUsername()).isEqualTo("anonymous");
         assertThat(context.getRequestedProtocolVersion()).isEqualTo("1.0");
         assertThat(context.getState()).containsEntry(
-                org.a2aproject.sdk.server.ServerCallContext.TRANSPORT_KEY, "jsonrpc");
+                org.a2aproject.sdk.server.ServerCallContext.TRANSPORT_KEY,
+                org.a2aproject.sdk.spec.TransportProtocol.JSONRPC);
         assertThat(context.getState()).containsKey(ServletServerCallContextFactory.HEADERS_STATE_KEY);
     }
 

@@ -11,10 +11,10 @@ Agent Card discovery. The starter rejects transport settings other than
 `JSONRPC`. Java client interoperability tests are under
 `a2a-spring-boot-starter-web/src/test`.
 
-`A2ASpringAbstractServerTest` exists but is disabled in 0.1.x. Passing that
-contract and demonstrating applicable TCK conformance are 0.2.0 gates, not
-claims of this preview. See [TCK conformance](tck.md) and the
-[release roadmap](release-roadmap.md) for current scope and evidence policy.
+`A2ASpringAbstractServerTest` is enabled and passes all 54 tests with zero
+failures, errors, or skips on the current development branch. Applicable TCK
+conformance has not yet been verified. See [TCK conformance](tck.md) and the
+[release roadmap](release-roadmap.md) for current evidence and remaining gates.
 
 This community-maintained integration is listed in the official A2A Java
 SDK's server integrations directory. The listing does not make the repository
@@ -29,5 +29,5 @@ implementation.
   the store interfaces. Data does not persist across restarts by default.
 - The starter does not provide authentication, authorization configuration,
   or outbound HTTP push delivery.
-- `A2ASpringAbstractServerTest` is disabled, and full TCK conformance is not
-  claimed. These are tracked as 0.2.0 conformance work.
+- The full TCK has not yet been run successfully on this branch; do not claim
+  TCK conformance until the workflow report is available and reviewed.

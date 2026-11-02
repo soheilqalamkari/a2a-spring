@@ -7,10 +7,10 @@ not advertised by this integration must be reported separately from applicable
 checks.
 
 The repository includes `A2ASpringAbstractServerTest`, which extends the
-official `AbstractA2AServerTest`. The class is disabled in the 0.1.x preview;
-its presence does not mean the official contract runs or passes. Enabling and
-passing it is a 0.2.0 conformance gate. Likewise, this preview does not claim
-full TCK conformance. Push delivery can only be advertised when an application
+official `AbstractA2AServerTest`. It is enabled and currently passes all 54
+cases with zero failures, errors, or skips on the development branch. This is
+evidence for the SDK server-test contract; it does not establish full TCK
+conformance. Push delivery can only be advertised when an application
 provides a sender and explicitly enables it.
 
 ## Local verification command
@@ -36,16 +36,14 @@ report artifact used for its claims.
 
 ## CI verification
 
-The manually triggered [TCK workflow](../.github/workflows/tck.yml) runs the
+The [TCK workflow](../.github/workflows/tck.yml) runs the
 Maven verification suite, starts the hello-world server, executes the official
 JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
-The workflow is an available evidence mechanism; a run is evidence of a pass
-only if it completed successfully and its report shows the applicable checks
-passing. No TCK pass claim is made for 0.1.x by this document.
+The workflow is evidence of a pass only if it completed successfully and its
+report shows the applicable checks passing. The TCK has not yet been run on
+this development branch, so no TCK pass claim is made here.
 
-The TCK workflow is manually triggered. For 0.1.x, use it to collect preview
-feedback and report unsupported or non-applicable capabilities separately.
-For 0.2.0 conformance, link a successful workflow artifact after applicable
-JSON-RPC checks and the official abstract server test pass. Never describe
+The workflow runs for pull requests, updates to `main`, and manual dispatch.
+Report unsupported and non-applicable capabilities separately. Never describe
 skipped or untested checks as passing.

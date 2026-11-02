@@ -38,7 +38,8 @@ The current line is an early preview, not a stable release.
 
 ### 0.2.0 — Conformance milestone
 
-- Run and pass `A2ASpringAbstractServerTest` against a real Spring Boot server.
+- `A2ASpringAbstractServerTest` is enabled and passes all 54 tests against a
+  real Spring Boot server on the current development branch.
 - Complete the applicable JSON-RPC contract: task lifecycle and history,
   terminal states, errors, streaming order and closure, resubscription, and
   concurrent updates.
@@ -47,7 +48,7 @@ The current line is an early preview, not a stable release.
   it as unsupported.
 - Run the official JSON-RPC TCK in CI and retain downloadable JSON, HTML, and
   JUnit reports together with the exact SDK, Java, Spring Boot, and TCK
-  revisions.
+  revisions. The workflow is configured; a passing run is still required.
 - Reconcile historical TCK summaries before publishing pass rates. Report
   applicable, skipped, unsupported, and untested checks separately.
 
@@ -98,8 +99,7 @@ Spring ecosystem integrations.
 ## Current baseline
 
 The repository remains on `0.1.0-SNAPSHOT`. The official abstract server test
-scaffold exists but is disabled at this baseline; enabling it and passing the
-contract are 0.2.0 gates. TCK documentation has historical summaries that need
-reconciliation against a reproducible report before they are used as release
-evidence. Maven Central publication and a clean-consumer resolution check
-remain release work.
+contract now passes on the development branch. The JSON-RPC TCK still needs a
+successful CI run and review of its downloadable report before making a TCK
+conformance claim. Maven Central publication and a clean-consumer resolution
+check remain release work.
