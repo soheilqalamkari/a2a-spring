@@ -47,14 +47,14 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41424301793)
-completed successfully for PR head `c336fbacebb07b8737c36735f06d5f35dbc0a067`.
-Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41424301793/artifacts/13132150234)
+The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41425690050)
+completed successfully for PR head `ccb2855843da7751b06b9e996c84f55228c2aa3a`.
+Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41425690050/artifacts/13132047239)
 for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.4.0.Final`,
 Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.17`, and
 TCK commit `d4d6fae7887f88ef607fb461c13e3b0e1802f19b`.
 
-The JUnit report contains 235 cases: 80 passed, 155 skipped, 0 failures, and
+The JUnit report contains 235 cases: 81 passed, 154 skipped, 0 failures, and
 0 errors. The compatibility report records 67 MUST requirements as PASS, 25
 as SKIPPED, and 22 as NOT TESTED. It reports 75.3% MUST compatibility and
 64.4% overall compatibility. Skips include unsupported HTTP+JSON/gRPC
@@ -77,16 +77,13 @@ The 25 requirement-level skips break down as follows:
 
 The JUnit report also contains skipped test cases beyond the 25
 requirement-level entries. Most are parameterized checks for HTTP+JSON/gRPC or
-capabilities the sample does not advertise. One JSON-RPC case was a genuine
-gap: `test_returns_message_with_text_part[jsonrpc]` was skipped after the
-sample's message-only response request timed out. The earlier artifact's
-server log showed that the sample emitted a message and then redundantly
-completed a terminal task. A first correction removed the duplicate
-completion, but the follow-up run still timed out because the sample had
-already submitted a task before taking the message-only path. The current PR
-branch now handles that path before task creation and returns the expected
-direct message. A new TCK run must confirm the case passes before treating
-this gap as resolved.
+capabilities the sample does not advertise. An earlier run skipped the
+in-scope JSON-RPC case `test_returns_message_with_text_part[jsonrpc]`: the
+sample had submitted a task before returning a message, then redundantly
+completed the terminal task and timed out. The sample now handles this
+message-only response before task creation. In the latest run, this test
+passes; the remaining 154 skipped JUnit cases are classified by the reasons
+above or by the untested requirements below.
 
 The 22 MUST requirements marked NOT TESTED are grouped here. These are not
 passes, and they prevent a full conformance claim:
