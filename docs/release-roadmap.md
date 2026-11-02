@@ -52,6 +52,12 @@ The current line is an early preview, not a stable release.
   SDK, Java, Spring Boot, and TCK versions and revision with each report.
 - Track remaining skipped and not-tested requirements explicitly; a successful
   workflow exit does not mean every TCK requirement passed.
+- Resolve the JSON-RPC message-only response case identified in the JUnit
+  report, and verify request-version semantics. Keep authentication, in-task
+  authorization, Agent Card signing, and extra transports explicitly scoped:
+  the sample does not advertise auth/signing capabilities, auth-dependent
+  checks need an app that declares those requirements, and production TLS is
+  a deployment concern. Do not count these as TCK passes.
 
 ### 0.3.0 — Spring production foundations
 

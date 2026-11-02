@@ -47,8 +47,8 @@ public class HelloWorldAgent implements AgentExecutor {
             emitter.addArtifact(List.of(new FilePart(
                     new FileWithUri("text/plain", "output.txt", "https://example.com/output.txt"))));
         } else if (messageId.contains("message-response")) {
-            emitter.sendMessage(List.of(new TextPart("Generated message response")));
-            emitter.complete();
+            emitter.sendMessage(List.of(new TextPart("Direct message response")));
+            return;
         } else {
             emitter.addArtifact(List.of(new TextPart("Hello from a Spring Boot A2A agent")));
         }
