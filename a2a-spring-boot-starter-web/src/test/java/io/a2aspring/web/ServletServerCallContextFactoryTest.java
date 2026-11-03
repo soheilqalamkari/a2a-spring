@@ -21,7 +21,8 @@ class ServletServerCallContextFactoryTest {
         assertThat(context.getUser().getUsername()).isEqualTo("anonymous");
         assertThat(context.getRequestedProtocolVersion()).isEqualTo("1.0");
         assertThat(context.getState()).containsEntry(
-                org.a2aproject.sdk.server.ServerCallContext.TRANSPORT_KEY, "jsonrpc");
+                org.a2aproject.sdk.server.ServerCallContext.TRANSPORT_KEY,
+                org.a2aproject.sdk.spec.TransportProtocol.JSONRPC);
         assertThat(context.getState()).containsKey(ServletServerCallContextFactory.HEADERS_STATE_KEY);
     }
 
@@ -38,5 +39,15 @@ class ServletServerCallContextFactoryTest {
         @SuppressWarnings("unchecked")
         var headers = (java.util.Map<String, String>) context.getState().get("headers");
         assertThat(headers).containsEntry("X-Request-Id", "request-1");
+    }
+
+    @Test
+    void propagatesRequestedProtocolVersionToSdkContext() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("A2A-Version", "0.3");
+
+        var context = factory.create(request);
+
+        assertThat(context.getRequestedProtocolVersion()).isEqualTo("0.3");
     }
 }

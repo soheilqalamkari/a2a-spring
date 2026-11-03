@@ -21,6 +21,10 @@ public class HelloWorldAgent implements AgentExecutor {
     @Override
     public void execute(RequestContext context, AgentEmitter emitter) {
         String messageId = context.getMessage().messageId();
+        if (messageId.contains("message-response")) {
+            emitter.sendMessage(List.of(new TextPart("Direct message response")));
+            return;
+        }
         if (context.getTask() == null) {
             emitter.submit();
         }
@@ -46,9 +50,6 @@ public class HelloWorldAgent implements AgentExecutor {
         } else if (messageId.contains("artifact-file")) {
             emitter.addArtifact(List.of(new FilePart(
                     new FileWithUri("text/plain", "output.txt", "https://example.com/output.txt"))));
-        } else if (messageId.contains("message-response")) {
-            emitter.sendMessage(List.of(new TextPart("Generated message response")));
-            emitter.complete();
         } else {
             emitter.addArtifact(List.of(new TextPart("Hello from a Spring Boot A2A agent")));
         }

@@ -21,6 +21,10 @@ final class SpringCdiInstance<T> implements Instance<T> {
         return new SpringCdiInstance<>(null, false);
     }
 
+    static <T> SpringCdiInstance<T> of(T value) {
+        return new SpringCdiInstance<>(java.util.Objects.requireNonNull(value), true);
+    }
+
     @Override public T get() {
         if (!present) throw new UnsatisfiedResolutionException();
         return value;

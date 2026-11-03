@@ -42,6 +42,20 @@ public class A2AWebController {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                     .body(JsonUtil.toJson(errorResponse(request, -32700, "Parse error")));
         }
+        JsonObject root = JsonParser.parseString(request).getAsJsonObject();
+        if (!root.has("jsonrpc") || !root.get("jsonrpc").isJsonPrimitive()
+                || !root.getAsJsonPrimitive("jsonrpc").isString()
+                || !"2.0".equals(root.get("jsonrpc").getAsString())
+                || !root.has("method") || !root.get("method").isJsonPrimitive()
+                || !root.getAsJsonPrimitive("method").isString()
+                || root.get("method").getAsString().isBlank()
+                || (root.has("id") && !root.get("id").isJsonNull()
+                && (!root.get("id").isJsonPrimitive()
+                || (!root.get("id").getAsJsonPrimitive().isString()
+                && !root.get("id").getAsJsonPrimitive().isNumber())))) {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                    .body(JsonUtil.toJson(errorResponse(request, -32600, "Invalid Request")));
+        }
         try {
             if (!dispatcher.isStreaming(request)) {
                 String response = dispatcher.dispatch(request, context);
@@ -81,6 +95,9 @@ public class A2AWebController {
                             exception.getCode() == null ? -32006 : exception.getCode(),
                             exception.getMessage())));
         } catch (RuntimeException exception) {
+            return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                    .body(JsonUtil.toJson(errorResponse(request, -32602, "Invalid params")));
+        } catch (Exception exception) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                     .body(JsonUtil.toJson(errorResponse(request, -32602, "Invalid params")));
         }

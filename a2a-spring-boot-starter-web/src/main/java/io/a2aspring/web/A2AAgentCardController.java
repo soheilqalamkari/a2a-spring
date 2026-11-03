@@ -4,6 +4,7 @@ import io.a2aspring.core.A2ARuntime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @ConditionalOnBean(A2ARuntime.class)
 public class A2AAgentCardController {
+    private final long lastModified = System.currentTimeMillis();
     private final A2ARuntime runtime;
     private final ObjectMapper objectMapper;
 
@@ -23,6 +25,11 @@ public class A2AAgentCardController {
     @GetMapping(value = "/.well-known/agent-card.json", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> agentCard() throws com.fasterxml.jackson.core.JsonProcessingException {
         String json = objectMapper.copy().setSerializationInclusion(JsonInclude.Include.NON_NULL).writeValueAsString(runtime.agentCard());
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(json);
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(java.time.Duration.ofMinutes(5)))
+                .eTag('"' + Integer.toHexString(json.hashCode()) + '"')
+                .lastModified(lastModified)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(json);
     }
 }

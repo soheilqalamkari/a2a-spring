@@ -7,15 +7,20 @@ not advertised by this integration must be reported separately from applicable
 checks.
 
 The repository includes `A2ASpringAbstractServerTest`, which extends the
-official `AbstractA2AServerTest`. The class is disabled in the 0.1.x preview;
-its presence does not mean the official contract runs or passes. Enabling and
-passing it is a 0.2.0 conformance gate. Likewise, this preview does not claim
-full TCK conformance. Push delivery can only be advertised when an application
-provides a sender and explicitly enables it.
+official `AbstractA2AServerTest`. It is enabled and passes all 54 cases with
+zero failures, errors, or skips. Push delivery can only be advertised when an
+application provides a sender and explicitly enables it.
 
 ## Local verification command
 
 The TCK requires Python 3.11+ and `uv`:
+
+```bash
+mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.1.0-SNAPSHOT.jar --server.port=8080
+```
+
+With the sample server running, use another terminal:
 
 ```bash
 git clone https://github.com/a2aproject/a2a-tck.git ../a2a-tck
@@ -36,16 +41,77 @@ report artifact used for its claims.
 
 ## CI verification
 
-The manually triggered [TCK workflow](../.github/workflows/tck.yml) runs the
+The [TCK workflow](../.github/workflows/tck.yml) runs the
 Maven verification suite, starts the hello-world server, executes the official
 JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
-The workflow is an available evidence mechanism; a run is evidence of a pass
-only if it completed successfully and its report shows the applicable checks
-passing. No TCK pass claim is made for 0.1.x by this document.
+### Latest CI evidence
 
-The TCK workflow is manually triggered. For 0.1.x, use it to collect preview
-feedback and report unsupported or non-applicable capabilities separately.
-For 0.2.0 conformance, link a successful workflow artifact after applicable
-JSON-RPC checks and the official abstract server test pass. Never describe
+The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41425690050)
+completed successfully for PR head `ccb2855843da7751b06b9e996c84f55228c2aa3a`.
+Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41425690050/artifacts/13132047239)
+for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.4.0.Final`,
+Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.17`, and
+TCK commit `d4d6fae7887f88ef607fb461c13e3b0e1802f19b`.
+
+The JUnit report contains 235 cases: 81 passed, 154 skipped, 0 failures, and
+0 errors. The compatibility report records 67 MUST requirements as PASS, 25
+as SKIPPED, and 22 as NOT TESTED. It reports 75.3% MUST compatibility and
+64.4% overall compatibility. Skips include unsupported HTTP+JSON/gRPC
+transports and capability-dependent checks, including push notifications
+which the sample does not advertise. NOT TESTED items are not passes. This is
+a successful MUST-level JSON-RPC workflow run, not a claim that every TCK
+requirement is implemented or that full protocol conformance is complete.
+
+### Review of skipped and untested checks
+
+The 25 requirement-level skips break down as follows:
+
+| TCK entries | Classification |
+| --- | --- |
+| `HTTP_JSON-ERR-001`, `HTTP_JSON-ERR-002`, `HTTP_JSON-SVC-002`, `HTTP_JSON-SSE-001`, `HTTP_JSON-STATUS-001`; `GRPC-ERR-001`, `GRPC-ERR-002`, `GRPC-ERR-003`, `GRPC-META-001`, `GRPC-SVC-001`, `GRPC-SVC-002` | Out of the advertised Spring MVC JSON-RPC/SSE transport scope. |
+| `PUSH-CREATE-001/002`, `PUSH-GET-001/002`, `PUSH-LIST-001`, `PUSH-DEL-001/002`, `PUSH-DELIVER-001/002/003` | The TCK sample does not advertise push notifications. These checks do not establish push behavior; delivery remains application supplied and disabled in the sample. |
+| `CARD-EXT-001/002` | The TCK sample does not advertise the extended Agent Card capability, so authentication and not-configured probes are not applicable to this sample. |
+| `CORE-CAP-004` | The sample does not declare the TCK's required extension, so the missing-required-extension probe is skipped. Extension error behavior remains unverified by this run. |
+| `CORE-CAP-002` | The TCK's negative probe asks a streaming-capable agent to behave as if streaming were unsupported. It is skipped because the sample advertises streaming; positive streaming checks are the relevant behavior. |
+
+The JUnit report also contains skipped test cases beyond the 25
+requirement-level entries. Most are parameterized checks for HTTP+JSON/gRPC or
+capabilities the sample does not advertise. An earlier run skipped the
+in-scope JSON-RPC case `test_returns_message_with_text_part[jsonrpc]`: the
+sample had submitted a task before returning a message, then redundantly
+completed the terminal task and timed out. The sample now handles this
+message-only response before task creation. In the latest run, this test
+passes; the remaining 154 skipped JUnit cases are classified by the reasons
+above or by the untested requirements below.
+
+The 22 MUST requirements marked NOT TESTED are grouped here. These are not
+passes, and they prevent a full conformance claim:
+
+| Entries | Scope assessment |
+| --- | --- |
+| `CARD-SIGN-001`–`CARD-SIGN-004` | Agent Card signing is not implemented or advertised by this sample; signing-specific behavior is conditional and remains unverified. |
+| `AUTH-TLS-001`, `AUTH-SERVER-002`, `AUTH-INTASK-001`–`AUTH-INTASK-004`, `AUTH-SCOPE-001`–`AUTH-SCOPE-003` | These checks need a secured deployment or an agent that declares and exercises authentication/authorization requirements. The sample declares no security schemes. Production TLS and any required request authentication must be supplied by deployment/application configuration; in-task authorization behavior remains unverified. |
+| `VER-CLIENT-001`, `VER-CLIENT-002` | Client-side requirements; this server integration does not implement an A2A client. |
+| `VER-SERVER-001` | Server version-semantics behavior is relevant to JSON-RPC but was not tested by the TCK. A Spring-specific test verifies that `A2A-Version: 0.3` reaches the SDK's `ServerCallContext`; that checks adapter propagation only, not the full requirement. The report separately marks unsupported-version and empty-version probes as passing; those do not cover processing requests using the requested version's semantics. Keep this as a 0.2.0 conformance gate. |
+| `BIND-EQUIV-001`–`BIND-EQUIV-004` | Multi-binding equivalence is not applicable while JSON-RPC is the only supported transport. |
+| `HTTP_JSON-SVC-001`, `GRPC-SVC-003` | Binding-specific requirements for unsupported transports; out of current scope. |
+
+The remaining 15 NOT TESTED entries are SHOULD/MAY requirements: task-history
+and multi-turn behaviors (`CORE-HIST-*`, `CORE-MULTI-*`), serialization
+forward compatibility (`DM-SERIAL-005`), Agent Card caching
+(`CARD-CACHE-001`–`003`), and additional TLS/in-task-auth recommendations
+(`AUTH-TLS-002`, `AUTH-SERVER-001`, `AUTH-INTASK-005/006`). Task history is
+covered in part by the Java server contract suite, but this TCK run provides
+no evidence for those history requirements.
+
+For merge review, the protocol-relevant items still needing explicit follow-up
+are the corrected JSON-RPC message-only case, version negotiation, security
+and in-task authorization scope, and the extension/push/extended-card
+capabilities if the project later advertises them. Unsupported transport and
+multi-binding checks can remain out of scope while the Agent Card advertises
+only JSON-RPC.
+
+The workflow runs for pull requests, updates to `main`, and manual dispatch.
+Report unsupported and non-applicable capabilities separately. Never describe
 skipped or untested checks as passing.
