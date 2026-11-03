@@ -40,4 +40,14 @@ class ServletServerCallContextFactoryTest {
         var headers = (java.util.Map<String, String>) context.getState().get("headers");
         assertThat(headers).containsEntry("X-Request-Id", "request-1");
     }
+
+    @Test
+    void propagatesRequestedProtocolVersionToSdkContext() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("A2A-Version", "0.3");
+
+        var context = factory.create(request);
+
+        assertThat(context.getRequestedProtocolVersion()).isEqualTo("0.3");
+    }
 }

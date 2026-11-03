@@ -53,11 +53,30 @@ The current line is an early preview, not a stable release.
 - Track remaining skipped and not-tested requirements explicitly; a successful
   workflow exit does not mean every TCK requirement passed.
 - Resolve the JSON-RPC message-only response case identified in the JUnit
-  report, and verify request-version semantics. Keep authentication, in-task
-  authorization, Agent Card signing, and extra transports explicitly scoped:
-  the sample does not advertise auth/signing capabilities, auth-dependent
-  checks need an app that declares those requirements, and production TLS is
-  a deployment concern. Do not count these as TCK passes.
+  report, and verify server request-version semantics (`VER-SERVER-001`). The
+  Spring adapter must preserve the requested version in `ServerCallContext`;
+  that header propagation is covered by a focused test. Do not count this as a
+  pass for the broader, untested TCK requirement.
+
+The remaining untested MUST entries are assigned by applicability, rather
+than treated as one implementation backlog:
+
+- `VER-CLIENT-001/002` are client requirements owned by the official Java
+  client, not this server integration. `VER-SERVER-001` remains a 0.2.0
+  server-side verification item.
+- `AUTH-TLS-001` is a production deployment requirement; document TLS at the
+  deployment boundary. The 0.3.0 optional security module will test
+  `AUTH-SERVER-002`, `AUTH-INTASK-001`–`004`, and `AUTH-SCOPE-001`–`003` when
+  an application declares authentication requirements or exercises
+  authorization-required tasks. These are conditional and are not a claim
+  that the unauthenticated sample has passed them.
+- `CARD-SIGN-001`–`004` apply only if Agent Card signing is implemented. No
+  signing capability is advertised or promised on the current roadmap; add
+  it as a separately scoped feature with its own tests before advertising
+  signed cards.
+- `BIND-EQUIV-001`–`004`, `HTTP_JSON-SVC-001`, and `GRPC-SVC-003` apply only
+  when the integration supports those bindings. They remain outside 1.0;
+  evaluate them with each transport proposal after 1.0.
 
 ### 0.3.0 — Spring production foundations
 
@@ -68,7 +87,8 @@ The current line is an early preview, not a stable release.
 - Add a persistent task-store adapter only after documenting its lifecycle
   and compatibility contract. Keep in-memory storage as the default.
 - Document authentication, storage replacement, graceful shutdown, and
-  supported deployment configurations.
+  supported deployment configurations, including production TLS termination
+  and the conditional authentication/authorization test scope above.
 
 ### 1.0.0 — Stable Spring MVC release
 
