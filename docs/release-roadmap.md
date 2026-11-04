@@ -52,11 +52,14 @@ The current line is an early preview, not a stable release.
   SDK, Java, Spring Boot, and TCK versions and revision with each report.
 - Track remaining skipped and not-tested requirements explicitly; a successful
   workflow exit does not mean every TCK requirement passed.
-- Resolve the JSON-RPC message-only response case identified in the JUnit
-  report, and verify server request-version semantics (`VER-SERVER-001`). The
-  Spring adapter must preserve the requested version in `ServerCallContext`;
-  that header propagation is covered by a focused test. Do not count this as a
-  pass for the broader, untested TCK requirement.
+- The Spring adapter preserves the request's `A2A-Version` in
+  `ServerCallContext`, including absent and explicitly empty values. Integration
+  tests verify the pinned SDK accepts the advertised `1.0` interface and
+  returns `VersionNotSupportedError` for incompatible `2.0` and defaulted
+  `0.3` requests. The SDK 1.4.0.Final validator compares major versions;
+  retain that limitation in conformance claims and track exact minor-version
+  semantics with the SDK maintainers before marking `VER-SERVER-001` fully
+  resolved.
 
 The remaining untested MUST entries are assigned by applicability, rather
 than treated as one implementation backlog:

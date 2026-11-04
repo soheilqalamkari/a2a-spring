@@ -94,6 +94,7 @@ class A2AClientInteropTest {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://localhost:" + port + "/a2a"))
                 .header("Content-Type", "application/json")
+                .header("A2A-Version", "1.0")
                 .header("Accept", "text/event-stream")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();

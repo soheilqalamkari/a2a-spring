@@ -67,6 +67,47 @@ class A2AWebIntegrationTest {
     }
 
     @Test
+    void rejectsUnsupportedProtocolVersionUsingSdkError() throws Exception {
+        String request = messageSendRequest();
+
+        mockMvc.perform(post("/a2a").header("A2A-Version", "2.0")
+                        .contentType("application/json").content(request))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("-32009")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("VERSION_NOT_SUPPORTED")));
+    }
+
+    @Test
+    void appliesSdkDefaultToAbsentProtocolVersion() throws Exception {
+        String request = messageSendRequest();
+
+        mockMvc.perform(post("/a2a").contentType("application/json").content(request))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("-32009")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("VERSION_NOT_SUPPORTED")));
+    }
+
+    @Test
+    void appliesSdkDefaultToEmptyProtocolVersion() throws Exception {
+        String request = messageSendRequest();
+
+        mockMvc.perform(post("/a2a").header("A2A-Version", "")
+                        .contentType("application/json").content(request))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("-32009")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("VERSION_NOT_SUPPORTED")));
+    }
+
+    private String messageSendRequest() {
+        return """
+                {"jsonrpc":"2.0","id":1,"method":"message/send","params":{"message":{"messageId":"m1","contextId":"c1","role":"ROLE_USER","parts":[{"kind":"text","text":"hello"}]}}}
+                """;
+    }
+
+    @Test
     void returnsJsonRpcMethodNotFoundError() throws Exception {
         String request = "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"unknown/method\",\"params\":{}}";
 
@@ -81,7 +122,8 @@ class A2AWebIntegrationTest {
     void dispatchesTaskGetToOfficialSdkHandler() throws Exception {
         String request = "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tasks/get\",\"params\":{\"id\":\"missing-task\"}}";
 
-        mockMvc.perform(post("/a2a").contentType("application/json").content(request))
+        mockMvc.perform(post("/a2a").header("A2A-Version", "1.0")
+                        .contentType("application/json").content(request))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json"))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("-32001")));

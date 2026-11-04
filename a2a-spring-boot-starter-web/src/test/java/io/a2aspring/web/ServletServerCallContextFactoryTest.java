@@ -50,4 +50,21 @@ class ServletServerCallContextFactoryTest {
 
         assertThat(context.getRequestedProtocolVersion()).isEqualTo("0.3");
     }
+
+    @Test
+    void preservesAbsentProtocolVersionForSdkDefaulting() {
+        var context = factory.create(new MockHttpServletRequest());
+
+        assertThat(context.getRequestedProtocolVersion()).isNull();
+    }
+
+    @Test
+    void preservesExplicitlyEmptyProtocolVersionForSdkDefaulting() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader("A2A-Version", "");
+
+        var context = factory.create(request);
+
+        assertThat(context.getRequestedProtocolVersion()).isEmpty();
+    }
 }
