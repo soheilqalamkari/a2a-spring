@@ -22,8 +22,7 @@ public final class ServletServerCallContextFactory implements ServerCallContextF
         state.put(HEADERS_STATE_KEY, headers(request));
 
         String protocolVersion = request.getHeader("A2A-Version");
-        return new ServerCallContext(user(request), state, Set.of(),
-                protocolVersion == null ? "1.0" : protocolVersion);
+        return new ServerCallContext(user(request), state, Set.of(), protocolVersion);
     }
 
     private Map<String, String> headers(HttpServletRequest request) {
