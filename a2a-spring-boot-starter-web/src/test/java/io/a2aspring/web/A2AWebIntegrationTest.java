@@ -12,6 +12,8 @@ import org.a2aproject.sdk.server.tasks.AgentEmitter;
 import org.a2aproject.sdk.server.tasks.PushNotificationConfigStore;
 import org.a2aproject.sdk.server.tasks.TaskStore;
 import org.a2aproject.sdk.spec.TextPart;
+import org.a2aproject.sdk.spec.AgentCard;
+import org.a2aproject.sdk.spec.AgentInterface;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringBootConfiguration;
@@ -36,6 +38,9 @@ class A2AWebIntegrationTest {
 
     @Autowired
     private PushNotificationConfigStore pushNotificationConfigStore;
+
+    @Autowired
+    private AgentCard agentCard;
 
     @Test
     void exposesReplaceableSdkInfrastructureContracts() {
@@ -76,6 +81,19 @@ class A2AWebIntegrationTest {
                 .andExpect(content().contentTypeCompatibleWith("application/json"))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("-32009")))
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("VERSION_NOT_SUPPORTED")));
+    }
+
+    @Test
+    void sdkAcceptsSameMajorDifferentMinorWhenOnlyOneInterfaceIsAdvertised() throws Exception {
+        org.assertj.core.api.Assertions.assertThat(agentCard.supportedInterfaces())
+                .extracting(AgentInterface::protocolVersion)
+                .containsExactly("1.0");
+
+        mockMvc.perform(post("/a2a").header("A2A-Version", "1.1")
+                        .contentType("application/json").content(messageSendRequest()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("Hello from test agent")));
     }
 
     @Test
