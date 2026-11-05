@@ -4,7 +4,7 @@ The current preview baseline is:
 
 | A2A Spring | Spring Boot | Java | Official A2A Java SDK |
 | --- | --- | --- | --- |
-| `0.1.x` | `3.5.x` | 17+ | `1.4.0.Final` |
+| `0.1.x` | `3.5.x` | 17+ | `1.5.0.Final` |
 
 The supported 0.1.x server path is Spring MVC with JSON-RPC and SSE, plus
 Agent Card discovery. The starter rejects transport settings other than
