@@ -45,23 +45,17 @@ The [TCK workflow](../.github/workflows/tck.yml) runs the
 Maven verification suite, starts the hello-world server, executes the official
 JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
-### Previous successful CI evidence
+### Latest CI evidence
 
-The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41425690050)
-completed successfully for PR head `ccb2855843da7751b06b9e996c84f55228c2aa3a`.
-Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41425690050/artifacts/13132047239)
-for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.4.0.Final`,
-Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.17`, and
+The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41986736276)
+completed successfully for PR #12. Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41986736276/artifacts/13396431303)
+for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.5.0.Final`,
+Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.18`, and
 TCK commit `d4d6fae7887f88ef607fb461c13e3b0e1802f19b`.
 
-This report was produced with SDK `1.4.0.Final`; it is historical evidence for
-the previous dependency baseline. The `1.5.0.Final` compatibility run is
-pending and must publish a new report before this section can be called the
-latest evidence for the current baseline.
-
-The JUnit report contains 235 cases: 81 passed, 154 skipped, 0 failures, and
-0 errors. The compatibility report records 67 MUST requirements as PASS, 25
-as SKIPPED, and 22 as NOT TESTED. It reports 75.3% MUST compatibility and
+The JUnit report records 81 passed, 154 skipped, 30 deselected, 0 failures,
+and 0 errors. The compatibility report records 67 MUST requirements as PASS,
+25 as SKIPPED, and 22 as NOT TESTED. It reports 75.3% MUST compatibility and
 64.4% overall compatibility. Skips include unsupported HTTP+JSON/gRPC
 transports and capability-dependent checks, including push notifications
 which the sample does not advertise. NOT TESTED items are not passes. This is
