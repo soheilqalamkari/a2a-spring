@@ -86,6 +86,7 @@ public class A2AWebAutoConfiguration {
     PushNotificationSender a2aPushNotificationSender() {
         return (eventKind, task) -> {
             // A safe default when push notifications are disabled.
+            return true;
         };
     }
 
