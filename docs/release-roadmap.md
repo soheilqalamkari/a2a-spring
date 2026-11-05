@@ -46,12 +46,11 @@ The current line is an early preview, not a stable release.
 - Ensure push-notification capability declarations match tested behavior.
   Either test working delivery or leave the capability disabled and document
   it as unsupported.
-- The MUST-level JSON-RPC TCK workflow passed on SDK 1.4.0.Final; its JSON,
-  HTML, and JUnit reports are downloadable. That report shows 67 MUST
+- The MUST-level JSON-RPC TCK workflow passed on SDK 1.5.0.Final; its JSON,
+  HTML, and JUnit reports are downloadable. The report shows 67 MUST
   requirements passing, 25 skipped, and 22 not tested (75.3% MUST
-  compatibility). Re-run and retain the reports for SDK 1.5.0.Final before
-  using them as evidence for the current baseline. Keep the SDK, Java, Spring
-  Boot, and TCK versions and revision with each report.
+  compatibility). Keep the SDK, Java, Spring Boot, and TCK versions and
+  revision with each report.
 - Track remaining skipped and not-tested requirements explicitly; a successful
   workflow exit does not mean every TCK requirement passed.
 - The Spring adapter preserves the request's `A2A-Version` in
