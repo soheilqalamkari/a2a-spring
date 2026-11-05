@@ -47,16 +47,15 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41425690050)
-completed successfully for PR head `ccb2855843da7751b06b9e996c84f55228c2aa3a`.
-Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41425690050/artifacts/13132047239)
-for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.4.0.Final`,
-Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.17`, and
+The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41987444680)
+completed successfully for PR #12. Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41987444680/artifacts/13397141331)
+for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.5.0.Final`,
+Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.18`, and
 TCK commit `d4d6fae7887f88ef607fb461c13e3b0e1802f19b`.
 
-The JUnit report contains 235 cases: 81 passed, 154 skipped, 0 failures, and
-0 errors. The compatibility report records 67 MUST requirements as PASS, 25
-as SKIPPED, and 22 as NOT TESTED. It reports 75.3% MUST compatibility and
+The JUnit report records 81 passed, 154 skipped, 30 deselected, 0 failures,
+and 0 errors. The compatibility report records 67 MUST requirements as PASS,
+25 as SKIPPED, and 22 as NOT TESTED. It reports 75.3% MUST compatibility and
 64.4% overall compatibility. Skips include unsupported HTTP+JSON/gRPC
 transports and capability-dependent checks, including push notifications
 which the sample does not advertise. NOT TESTED items are not passes. This is
@@ -93,7 +92,7 @@ passes, and they prevent a full conformance claim:
 | `CARD-SIGN-001`–`CARD-SIGN-004` | Agent Card signing is not implemented or advertised by this sample; signing-specific behavior is conditional and remains unverified. |
 | `AUTH-TLS-001`, `AUTH-SERVER-002`, `AUTH-INTASK-001`–`AUTH-INTASK-004`, `AUTH-SCOPE-001`–`AUTH-SCOPE-003` | These checks need a secured deployment or an agent that declares and exercises authentication/authorization requirements. The sample declares no security schemes. Production TLS and any required request authentication must be supplied by deployment/application configuration; in-task authorization behavior remains unverified. |
 | `VER-CLIENT-001`, `VER-CLIENT-002` | Client-side requirements; this server integration does not implement an A2A client. |
-| `VER-SERVER-001` | The Spring integration now tests the pinned SDK's behavior through JSON-RPC: advertised `1.0` is accepted, incompatible major `2.0` returns `VersionNotSupportedError`, and absent/empty headers are defaulted by the SDK to `0.3` and rejected because the sample advertises only `1.0`. The SDK 1.4.0.Final validator compares major versions; these tests verify its advertised-interface routing and error mapping, not independent processing for multiple minor versions. Keep the requirement open until the SDK's major/minor compatibility policy is confirmed or addressed upstream. |
+| `VER-SERVER-001` | Spring JSON-RPC tests verify SDK 1.5.0.Final accepts advertised `1.0`, returns `VersionNotSupportedError` for incompatible major `2.0` and defaulted `0.3`, and accepts `1.1` when the Agent Card advertises only `1.0`. That last result reflects the SDK validator's same-major compatibility rule; it does not prove that the server processes requests using the exact requested `Major.Minor` semantics required by [A2A specification §3.6.2](https://github.com/a2aproject/A2A/blob/main/docs/specification.md#362-server-responsibilities). See the [SDK 1.5.0.Final validator](https://github.com/a2aproject/a2a-java/blob/v1.5.0.Final/server-common/src/main/java/org/a2aproject/sdk/server/version/A2AVersionValidator.java). Keep the requirement open pending confirmation or correction by the SDK maintainers. |
 | `BIND-EQUIV-001`–`BIND-EQUIV-004` | Multi-binding equivalence is not applicable while JSON-RPC is the only supported transport. |
 | `HTTP_JSON-SVC-001`, `GRPC-SVC-003` | Binding-specific requirements for unsupported transports; out of current scope. |
 

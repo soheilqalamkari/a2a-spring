@@ -26,7 +26,7 @@ Maven Central publication where possible. See the
 The current line is an early preview, not a stable release.
 
 - Supported baseline: Java 17+, Spring Boot 3.5.x, and A2A Java SDK
-  1.4.0.Final.
+  1.5.0.Final.
 - Supported server path: Spring MVC, JSON-RPC, Agent Card discovery, and SSE
   streaming.
 - Keep the runnable sample, starter instructions, compatibility matrix, and
@@ -46,20 +46,26 @@ The current line is an early preview, not a stable release.
 - Ensure push-notification capability declarations match tested behavior.
   Either test working delivery or leave the capability disabled and document
   it as unsupported.
-- The MUST-level JSON-RPC TCK workflow passed and its JSON, HTML, and JUnit
-  reports are downloadable. The latest report shows 67 MUST requirements
-  passing, 25 skipped, and 22 not tested (75.3% MUST compatibility). Keep the
-  SDK, Java, Spring Boot, and TCK versions and revision with each report.
+- The MUST-level JSON-RPC TCK workflow passed on SDK 1.5.0.Final; its JSON,
+  HTML, and JUnit reports are downloadable. The report shows 67 MUST
+  requirements passing, 25 skipped, and 22 not tested (75.3% MUST
+  compatibility). Keep the SDK, Java, Spring Boot, and TCK versions and
+  revision with each report.
 - Track remaining skipped and not-tested requirements explicitly; a successful
   workflow exit does not mean every TCK requirement passed.
 - The Spring adapter preserves the request's `A2A-Version` in
   `ServerCallContext`, including absent and explicitly empty values. Integration
   tests verify the pinned SDK accepts the advertised `1.0` interface and
   returns `VersionNotSupportedError` for incompatible `2.0` and defaulted
-  `0.3` requests. The SDK 1.4.0.Final validator compares major versions;
-  retain that limitation in conformance claims and track exact minor-version
-  semantics with the SDK maintainers before marking `VER-SERVER-001` fully
-  resolved.
+  `0.3` requests. The SDK 1.5.0.Final
+  [version validator](https://github.com/a2aproject/a2a-java/blob/v1.5.0.Final/server-common/src/main/java/org/a2aproject/sdk/server/version/A2AVersionValidator.java)
+  treats a requested `1.1` as compatible with an interface advertising only
+  `1.0`; this behavior needs confirmation against
+  [A2A specification §3.6.2](https://github.com/a2aproject/A2A/blob/main/docs/specification.md#362-server-responsibilities),
+  which requires processing using the requested `Major.Minor` semantics. Keep
+  `VER-SERVER-001` open until the SDK policy and implementation are confirmed
+  or corrected upstream and integration evidence demonstrates the requested
+  semantics.
 
 The remaining untested MUST entries are assigned by applicability, rather
 than treated as one implementation backlog:
