@@ -4,7 +4,7 @@ The current preview baseline is:
 
 | A2A Spring | Spring Boot | Java | Official A2A Java SDK |
 | --- | --- | --- | --- |
-| `0.1.x` | `3.5.x` | 17+ | `1.4.0.Final` |
+| `0.1.x` | `3.5.x` | 17+ | `1.5.1.Final` |
 
 The supported 0.1.x server path is Spring MVC with JSON-RPC and SSE, plus
 Agent Card discovery. The starter rejects transport settings other than
@@ -12,9 +12,10 @@ Agent Card discovery. The starter rejects transport settings other than
 `a2a-spring-boot-starter-web/src/test`.
 
 `A2ASpringAbstractServerTest` passes all 54 tests with zero failures, errors,
-or skips. The latest MUST-level JSON-RPC TCK workflow passed with 67 MUST
-requirements passing, 25 skipped, and 22 not tested. This is partial TCK
-evidence, not full conformance. See [TCK conformance](tck.md) and the
+or skips. The latest MUST-level JSON-RPC TCK workflow passed with 66 MUST
+requirements passing, 25 skipped, 17 not tested, and 7 pending manual
+verification. This is partial TCK evidence, not full conformance. See
+[TCK conformance](tck.md) and the
 [release roadmap](release-roadmap.md) for the reports and remaining gaps.
 
 This community-maintained integration is listed in the official A2A Java

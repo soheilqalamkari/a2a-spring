@@ -180,7 +180,7 @@ class A2ASpringAbstractServerTest extends AbstractA2AServerTest {
 
         @Bean
         PushNotificationSender pushNotificationSender() {
-            return (eventKind, task) -> { };
+            return (eventKind, task) -> true;
         }
 
         @Bean

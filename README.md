@@ -6,7 +6,7 @@ This project provides the foundation for running an A2A agent in a Spring Boot a
 
 ## Current status
 
-The integration is listed in the A2A Java SDK ecosystem. The project remains an early MVP foundation and currently provides:
+The integration is listed in the A2A Java SDK ecosystem. This is an active community preview and currently provides:
 
 - `a2a-spring-core` with typed properties and Spring `Environment` configuration;
 - `a2a-spring-boot-autoconfigure` with agent-card and executor discovery;
@@ -20,9 +20,10 @@ methods. The Agent Card advertises only JSON-RPC. Push-notification
 configuration APIs are provided by the SDK, but delivery is disabled unless
 the application supplies a `PushNotificationSender` and explicitly enables
 the feature. The official `AbstractA2AServerTest` passes all 54 cases on the
-current development branch. The MUST-level JSON-RPC TCK workflow passes; its
-latest report shows 67 MUST requirements passing, 25 skipped, and 22 not
-tested. Tests using the official Java client are included; see
+current development branch. The latest MUST-level JSON-RPC TCK report, generated
+with SDK 1.5.1.Final, shows 66 MUST requirements passing, 25 skipped, 17 not
+tested, and 7 pending manual verification. This is partial evidence, not full
+TCK conformance. Tests using the official Java client are included; see
 [TCK conformance](docs/tck.md) for verified results, scope, and remaining
 requirements.
 

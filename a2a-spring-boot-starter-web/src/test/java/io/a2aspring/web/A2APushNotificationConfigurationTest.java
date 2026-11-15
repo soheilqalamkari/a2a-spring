@@ -67,7 +67,7 @@ class A2APushNotificationConfigurationTest {
     static class PushSenderConfiguration {
         @Bean
         PushNotificationSender pushNotificationSender() {
-            return (eventKind, task) -> { };
+            return (eventKind, task) -> true;
         }
     }
 }
