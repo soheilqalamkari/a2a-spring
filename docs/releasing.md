@@ -19,7 +19,7 @@ Before a release candidate:
 
 Before publishing artifacts:
 
-1. Register and verify the `io.github.soheilghalamkari` namespace in the
+1. Register and verify the `io.github.soheilqalamkari` namespace in the
    Central Portal.
 2. Configure a `central` server entry in Maven `settings.xml` using a Central
    user token. Never commit the token or a private signing key.

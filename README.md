@@ -44,7 +44,7 @@ Documentation:
 
 ```xml
 <dependency>
-  <groupId>io.github.soheilghalamkari</groupId>
+  <groupId>io.github.soheilqalamkari</groupId>
   <artifactId>a2a-spring-boot-starter-web</artifactId>
   <version>0.2.0-SNAPSHOT</version>
 </dependency>
