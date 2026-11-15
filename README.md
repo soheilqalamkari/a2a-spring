@@ -6,7 +6,7 @@ This project provides the foundation for running an A2A agent in a Spring Boot a
 
 ## Current status
 
-The integration is listed in the A2A Java SDK ecosystem. The 0.2.0 conformance candidate is under review; it currently provides:
+The integration is listed in the A2A Java SDK ecosystem. The 0.2.0 conformance candidate is on `main` and remains unpublished; it currently provides:
 
 - `a2a-spring-core` with typed properties and Spring `Environment` configuration;
 - `a2a-spring-boot-autoconfigure` with agent-card and executor discovery;
