@@ -47,21 +47,21 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43717029391)
-completed successfully for PR #12. Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43717029391/artifacts/14162579590)
-for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.5.1.Final`,
-Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.18`, and
-TCK commit `104a7b4ae0d83f65c075e3793e322953a830eaba`.
+The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43720151911)
+completed successfully for PR #14. Download the
+[TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43720151911/artifacts/14164123103)
+for the separate `tck-baseline/` and `tck-required-extension/` reports. It
+used A2A Java SDK `1.5.1.Final`, Spring Boot `3.5.6`, Java `17.0.21`,
+Maven `3.9.15`, Python `3.15.2`, and TCK commit
+`104a7b4ae0d83f65c075e3793e322953a830eaba`.
 
-The JUnit report records 78 passed, 151 skipped, 34 deselected, 0 failures,
-and 0 errors. The compatibility report records 66 MUST requirements as PASS,
-25 as SKIPPED, 17 as NOT TESTED, and 7 as pending manual verification. Skips
-include unsupported HTTP+JSON/gRPC
-transports and capability-dependent checks, including push notifications
-which the sample does not advertise. NOT TESTED items are not passes. This is
-a successful MUST-level JSON-RPC workflow run, not a claim that every TCK
-requirement is implemented or that full protocol conformance is complete.
-
+The baseline report records 66 MUST requirements as PASS, 25 as SKIPPED,
+17 as NOT TESTED, and 7 as pending manual verification. Its JUnit report
+records 78 passed, 151 skipped, 34 deselected, 0 failures, and 0 errors.
+The separate scoped run selected the required-extension checks: 1 passed,
+1 skipped, 261 deselected. It records `CORE-CAP-004` as PASS for JSON-RPC
+and SKIPPED for HTTP+JSON. The scoped result does not change the baseline
+counts or establish full TCK conformance.
 ### Review of skipped and untested checks
 
 The 25 requirement-level skips break down as follows:
