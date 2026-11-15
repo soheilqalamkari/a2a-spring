@@ -1,12 +1,12 @@
 # Compatibility
 
-The current preview baseline is:
+The 0.2.0 conformance release candidate uses this compatibility baseline:
 
 | A2A Spring | Spring Boot | Java | Official A2A Java SDK |
 | --- | --- | --- | --- |
-| `0.1.x` | `3.5.x` | 17+ | `1.5.1.Final` |
+| `0.2.0-SNAPSHOT` (candidate) | `3.5.x` | 17+ | `1.5.1.Final` |
 
-The supported 0.1.x server path is Spring MVC with JSON-RPC and SSE, plus
+The supported 0.2.0 candidate server path is Spring MVC with JSON-RPC and SSE, plus
 Agent Card discovery. The starter rejects transport settings other than
 `JSONRPC`. Java client interoperability tests are under
 `a2a-spring-boot-starter-web/src/test`.
@@ -23,7 +23,7 @@ SDK's server integrations directory. The listing does not make the repository
 organization-maintained or transfer ownership. The SDK remains the protocol
 implementation.
 
-## 0.1.x limitations
+## Current limitations
 
 - JSON-RPC is the only supported transport; WebFlux, HTTP+JSON, and gRPC are
   not provided.

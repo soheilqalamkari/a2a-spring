@@ -17,7 +17,7 @@ The pinned TCK revision requires Python 3.15+ and `uv`:
 
 ```bash
 mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
-java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.1.0-SNAPSHOT.jar --server.port=8080
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.2.0-SNAPSHOT.jar --server.port=8080
 ```
 
 With the sample server running, use another terminal:
@@ -47,13 +47,14 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43720151911)
-completed successfully for PR #14. Download the
-[TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43720151911/artifacts/14164123103)
+The latest [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43723265038)
+completed successfully for PR #18. Download the
+[TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43723265038/artifacts/14165780642)
 for the separate `tck-baseline/` and `tck-required-extension/` reports. It
 used A2A Java SDK `1.5.1.Final`, Spring Boot `3.5.6`, Java `17.0.21`,
 Maven `3.9.15`, Python `3.15.2`, and TCK commit
-`104a7b4ae0d83f65c075e3793e322953a830eaba`.
+`104a7b4ae0d83f65c075e3793e322953a830eaba`. The TCK job passed, including its
+assertion that `CORE-CAP-004` is `PASS` for JSON-RPC in the scoped run.
 
 The baseline report records 66 MUST requirements as PASS, 25 as SKIPPED,
 17 as NOT TESTED, and 7 as pending manual verification. Its JUnit report
@@ -91,7 +92,7 @@ repository root:
 
 ```bash
 mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
-java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.1.0-SNAPSHOT.jar \
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.2.0-SNAPSHOT.jar \
   --spring.profiles.active=tck-required-extension \
   --server.port=8081 \
   --a2a.agent.url=http://localhost:8081/a2a

@@ -37,6 +37,6 @@ servlet principal is mapped to an authenticated user. Applications can replace
 the factory when their authentication or tenant model needs richer context.
 
 WebFlux, HTTP+JSON, gRPC, Spring Security, persistent storage, and observability
-are outside the supported 0.1.x scope. Push delivery can be enabled by an
+are outside the currently supported scope. Push delivery can be enabled by an
 application-supplied sender; the starter itself has no outbound HTTP
 implementation.

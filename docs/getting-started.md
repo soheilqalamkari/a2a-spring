@@ -5,11 +5,20 @@ reimplement the A2A protocol.
 
 ## 1. Add the starter
 
+The `0.2.0-SNAPSHOT` coordinate is a release candidate and is not yet available
+from Maven Central. To use it before publication, install the modules into
+your local Maven repository from the repository root:
+
+```bash
+mvn --batch-mode --no-transfer-progress install
+```
+
+
 ```xml
 <dependency>
   <groupId>io.github.soheilghalamkari</groupId>
   <artifactId>a2a-spring-boot-starter-web</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -59,7 +68,7 @@ application must provide the outbound sender implementation. If delivery is
 enabled without a `PushNotificationSender` bean, startup fails. The Agent Card
 does not advertise push notifications unless both requirements are met.
 
-The 0.1.x web starter supports `JSONRPC`; other values of
+The 0.2.0 candidate web starter supports `JSONRPC`; other values of
 `a2a.server.transport` are rejected. WebFlux, HTTP+JSON, and gRPC are not
 supported by this release line.
 
