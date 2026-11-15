@@ -21,9 +21,9 @@ configuration APIs are provided by the SDK, but delivery is disabled unless
 the application supplies a `PushNotificationSender` and explicitly enables
 the feature. The official `AbstractA2AServerTest` passes all 54 cases on the
 current development branch. The latest MUST-level JSON-RPC TCK report, generated
-with SDK 1.5.0.Final, shows 67 MUST requirements passing, 25 skipped, and 22
-not tested. This is partial evidence, not full TCK conformance. Tests using
-the official Java client are included; see
+with SDK 1.5.1.Final, shows 66 MUST requirements passing, 25 skipped, 17 not
+tested, and 7 pending manual verification. This is partial evidence, not full
+TCK conformance. Tests using the official Java client are included; see
 [TCK conformance](docs/tck.md) for verified results, scope, and remaining
 requirements.
 

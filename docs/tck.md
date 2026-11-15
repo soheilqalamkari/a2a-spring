@@ -47,16 +47,16 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41987444680)
-completed successfully for PR #12. Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/41987444680/artifacts/13397141331)
-for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.5.0.Final`,
+The [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43717029391)
+completed successfully for PR #12. Download the [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43717029391/artifacts/14162579590)
+for JSON, HTML, and JUnit reports. It used A2A Java SDK `1.5.1.Final`,
 Spring Boot `3.5.6`, Java `17.0.21`, Maven `3.9.15`, Python `3.11.18`, and
-TCK commit `d4d6fae7887f88ef607fb461c13e3b0e1802f19b`.
+TCK commit `104a7b4ae0d83f65c075e3793e322953a830eaba`.
 
-The JUnit report records 81 passed, 154 skipped, 30 deselected, 0 failures,
-and 0 errors. The compatibility report records 67 MUST requirements as PASS,
-25 as SKIPPED, and 22 as NOT TESTED. It reports 75.3% MUST compatibility and
-64.4% overall compatibility. Skips include unsupported HTTP+JSON/gRPC
+The JUnit report records 78 passed, 151 skipped, 34 deselected, 0 failures,
+and 0 errors. The compatibility report records 66 MUST requirements as PASS,
+25 as SKIPPED, 17 as NOT TESTED, and 7 as pending manual verification. Skips
+include unsupported HTTP+JSON/gRPC
 transports and capability-dependent checks, including push notifications
 which the sample does not advertise. NOT TESTED items are not passes. This is
 a successful MUST-level JSON-RPC workflow run, not a claim that every TCK
@@ -81,20 +81,25 @@ in-scope JSON-RPC case `test_returns_message_with_text_part[jsonrpc]`: the
 sample had submitted a task before returning a message, then redundantly
 completed the terminal task and timed out. The sample now handles this
 message-only response before task creation. In the latest run, this test
-passes; the remaining 154 skipped JUnit cases are classified by the reasons
+passes; the remaining 151 skipped JUnit cases are classified by the reasons
 above or by the untested requirements below.
 
-The 22 MUST requirements marked NOT TESTED are grouped here. These are not
+The latest report marks 17 MUST requirements NOT TESTED. These are not
 passes, and they prevent a full conformance claim:
 
 | Entries | Scope assessment |
 | --- | --- |
-| `CARD-SIGN-001`–`CARD-SIGN-004` | Agent Card signing is not implemented or advertised by this sample; signing-specific behavior is conditional and remains unverified. |
-| `AUTH-TLS-001`, `AUTH-SERVER-002`, `AUTH-INTASK-001`–`AUTH-INTASK-004`, `AUTH-SCOPE-001`–`AUTH-SCOPE-003` | These checks need a secured deployment or an agent that declares and exercises authentication/authorization requirements. The sample declares no security schemes. Production TLS and any required request authentication must be supplied by deployment/application configuration; in-task authorization behavior remains unverified. |
+| `AUTH-SERVER-002`, `AUTH-INTASK-001`–`AUTH-INTASK-004`, `AUTH-SCOPE-001`–`AUTH-SCOPE-003` | These checks need an agent that declares and exercises authentication/authorization requirements. The sample declares no security schemes; in-task authorization behavior remains unverified. |
 | `VER-CLIENT-001`, `VER-CLIENT-002` | Client-side requirements; this server integration does not implement an A2A client. |
-| `VER-SERVER-001` | The TCK does not test this server requirement. Focused Spring JSON-RPC integration tests against A2A Java SDK `1.5.1.Final` cover advertised `1.0`, rejection of unsupported `1.1` and `2.0`, acceptance of patch version `1.0.7`, and absent/empty defaults. SDK `1.5.1.Final` includes the fix merged for [A2A Java issue #1294](https://github.com/a2aproject/a2a-java/issues/1294). This requirement is supported by focused server tests, not by a TCK PASS; link the CI run that verifies these tests. |
+| `VER-SERVER-001` | The TCK does not test this server requirement. Focused Spring JSON-RPC integration tests against A2A Java SDK `1.5.1.Final` cover advertised `1.0`, rejection of unsupported `1.1` and `2.0`, acceptance of patch version `1.0.7`, and absent/empty defaults. SDK `1.5.1.Final` includes the fix merged for [A2A Java issue #1294](https://github.com/a2aproject/a2a-java/issues/1294). This requirement is supported by focused server tests, not by a TCK PASS; see the latest CI evidence above. |
 | `BIND-EQUIV-001`–`BIND-EQUIV-004` | Multi-binding equivalence is not applicable while JSON-RPC is the only supported transport. |
 | `HTTP_JSON-SVC-001`, `GRPC-SVC-003` | Binding-specific requirements for unsupported transports; out of current scope. |
+
+Seven MUST requirements are pending manual verification rather than marked
+NOT TESTED: `CARD-CLIENT-001`, `CARD-SIGN-001`–`CARD-SIGN-004`,
+`AUTH-TLS-001`, and `BIND-CUSTOM-002`. This project does not advertise Agent
+Card signing. The TCK also lists `AUTH-TLS-002` and `AUTH-SERVER-001` for
+manual verification at SHOULD level.
 
 The remaining 15 NOT TESTED entries are SHOULD/MAY requirements: task-history
 and multi-turn behaviors (`CORE-HIST-*`, `CORE-MULTI-*`), serialization

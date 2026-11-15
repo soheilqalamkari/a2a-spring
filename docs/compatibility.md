@@ -12,9 +12,10 @@ Agent Card discovery. The starter rejects transport settings other than
 `a2a-spring-boot-starter-web/src/test`.
 
 `A2ASpringAbstractServerTest` passes all 54 tests with zero failures, errors,
-or skips. The latest MUST-level JSON-RPC TCK workflow passed with 67 MUST
-requirements passing, 25 skipped, and 22 not tested. This is partial TCK
-evidence, not full conformance. See [TCK conformance](tck.md) and the
+or skips. The latest MUST-level JSON-RPC TCK workflow passed with 66 MUST
+requirements passing, 25 skipped, 17 not tested, and 7 pending manual
+verification. This is partial TCK evidence, not full conformance. See
+[TCK conformance](tck.md) and the
 [release roadmap](release-roadmap.md) for the reports and remaining gaps.
 
 This community-maintained integration is listed in the official A2A Java

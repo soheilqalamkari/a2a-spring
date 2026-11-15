@@ -46,11 +46,11 @@ The current line is an early preview, not a stable release.
 - Ensure push-notification capability declarations match tested behavior.
   Either test working delivery or leave the capability disabled and document
   it as unsupported.
-- The MUST-level JSON-RPC TCK workflow passed on SDK 1.5.0.Final; its JSON,
-  HTML, and JUnit reports are downloadable. The report shows 67 MUST
-  requirements passing, 25 skipped, and 22 not tested (75.3% MUST
-  compatibility). Keep the SDK, Java, Spring Boot, and TCK versions and
-  revision with each report.
+- The MUST-level JSON-RPC TCK workflow passed on SDK 1.5.1.Final; its JSON,
+  HTML, and JUnit reports are downloadable. The report shows 66 MUST
+  requirements passing, 25 skipped, 17 not tested, and 7 pending manual
+  verification. This is partial evidence, not full conformance. Keep the SDK,
+  Java, Spring Boot, and TCK versions and revision with each report.
 - Track remaining skipped and not-tested requirements explicitly; a successful
   workflow exit does not mean every TCK requirement passed.
 - The Spring adapter preserves the request's `A2A-Version` in
@@ -59,16 +59,18 @@ The current line is an early preview, not a stable release.
   [issue #1294](https://github.com/a2aproject/a2a-java/issues/1294), rejecting
   an unsupported minor version while retaining patch-version compatibility.
   Spring integration tests cover advertised `1.0`, rejected `1.1` and `2.0`,
-  accepted patch version `1.0.7`, and absent/empty defaults. The TCK does not
-  exercise `VER-SERVER-001`; keep the claim limited to the focused server tests
-  and their CI evidence.
+  accepted patch version `1.0.7`, and absent/empty defaults. These tests
+  resolve the version-negotiation gap for the supported JSON-RPC path against
+  SDK `1.5.1.Final`. The TCK does not exercise `VER-SERVER-001`, so the claim
+  is limited to focused server tests and their CI evidence.
 
 The remaining untested MUST entries are assigned by applicability, rather
 than treated as one implementation backlog:
 
 - `VER-CLIENT-001/002` are client requirements owned by the official Java
-  client, not this server integration. `VER-SERVER-001` remains a 0.2.0
-  server-side verification item.
+  client, not this server integration. `VER-SERVER-001` is verified for the
+  supported JSON-RPC path by the focused tests above; this does not imply TCK
+  coverage.
 - `AUTH-TLS-001` is a production deployment requirement; document TLS at the
   deployment boundary. The 0.3.0 optional security module will test
   `AUTH-SERVER-002`, `AUTH-INTASK-001`–`004`, and `AUTH-SCOPE-001`–`003` when
