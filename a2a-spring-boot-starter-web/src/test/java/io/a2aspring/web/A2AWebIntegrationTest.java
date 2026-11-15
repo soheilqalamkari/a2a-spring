@@ -84,12 +84,26 @@ class A2AWebIntegrationTest {
     }
 
     @Test
-    void sdkAcceptsSameMajorDifferentMinorWhenOnlyOneInterfaceIsAdvertised() throws Exception {
+    void rejectsSameMajorDifferentMinorWhenOnlyOneInterfaceIsAdvertised() throws Exception {
         org.assertj.core.api.Assertions.assertThat(agentCard.supportedInterfaces())
                 .extracting(AgentInterface::protocolVersion)
                 .containsExactly("1.0");
 
         mockMvc.perform(post("/a2a").header("A2A-Version", "1.1")
+                        .contentType("application/json").content(messageSendRequest()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith("application/json"))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("-32009")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("VERSION_NOT_SUPPORTED")));
+    }
+
+    @Test
+    void acceptsAdvertisedMajorMinorWithDifferentPatchVersion() throws Exception {
+        org.assertj.core.api.Assertions.assertThat(agentCard.supportedInterfaces())
+                .extracting(AgentInterface::protocolVersion)
+                .containsExactly("1.0");
+
+        mockMvc.perform(post("/a2a").header("A2A-Version", "1.0.7")
                         .contentType("application/json").content(messageSendRequest()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("application/json"))

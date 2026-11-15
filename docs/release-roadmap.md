@@ -26,7 +26,7 @@ Maven Central publication where possible. See the
 The current line is an early preview, not a stable release.
 
 - Supported baseline: Java 17+, Spring Boot 3.5.x, and A2A Java SDK
-  1.5.0.Final.
+  1.5.1.Final.
 - Supported server path: Spring MVC, JSON-RPC, Agent Card discovery, and SSE
   streaming.
 - Keep the runnable sample, starter instructions, compatibility matrix, and
@@ -54,18 +54,14 @@ The current line is an early preview, not a stable release.
 - Track remaining skipped and not-tested requirements explicitly; a successful
   workflow exit does not mean every TCK requirement passed.
 - The Spring adapter preserves the request's `A2A-Version` in
-  `ServerCallContext`, including absent and explicitly empty values. Integration
-  tests verify the pinned SDK accepts the advertised `1.0` interface and
-  returns `VersionNotSupportedError` for incompatible `2.0` and defaulted
-  `0.3` requests. The SDK 1.5.0.Final
-  [version validator](https://github.com/a2aproject/a2a-java/blob/v1.5.0.Final/server-common/src/main/java/org/a2aproject/sdk/server/version/A2AVersionValidator.java)
-  treats a requested `1.1` as compatible with an interface advertising only
-  `1.0`; this behavior needs confirmation against
-  [A2A specification §3.6.2](https://github.com/a2aproject/A2A/blob/main/docs/specification.md#362-server-responsibilities),
-  which requires processing using the requested `Major.Minor` semantics. Keep
-  `VER-SERVER-001` open until the SDK policy and implementation are confirmed
-  or corrected upstream and integration evidence demonstrates the requested
-  semantics.
+  `ServerCallContext`, including absent and explicitly empty values. A2A Java
+  SDK `1.5.1.Final` includes the merged fix for
+  [issue #1294](https://github.com/a2aproject/a2a-java/issues/1294), rejecting
+  an unsupported minor version while retaining patch-version compatibility.
+  Spring integration tests cover advertised `1.0`, rejected `1.1` and `2.0`,
+  accepted patch version `1.0.7`, and absent/empty defaults. The TCK does not
+  exercise `VER-SERVER-001`; keep the claim limited to the focused server tests
+  and their CI evidence.
 
 The remaining untested MUST entries are assigned by applicability, rather
 than treated as one implementation backlog:
