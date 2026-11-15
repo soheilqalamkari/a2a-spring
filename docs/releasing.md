@@ -24,7 +24,9 @@ Before publishing artifacts:
 2. Configure a `central` server entry in Maven `settings.xml` using a Central
    user token. Never commit the token or a private signing key.
 3. Configure a GPG key and verify it is available to Maven.
-4. Change the project version from `0.1.0-SNAPSHOT` to a release version.
+4. Supply a stable numeric release version (for example `0.2.0`) to the
+   workflow. It rejects snapshot or malformed versions and runs the full Maven
+   `clean deploy` lifecycle, including tests; never bypass verification.
 5. Run the full test suite and inspect the generated sources, Javadoc, POM,
    signatures, and checksums.
 6. For a local release, run `mvn -Prelease clean deploy` and complete or verify

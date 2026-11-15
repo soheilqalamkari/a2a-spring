@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.github.soheilghalamkari</groupId>
         <artifactId>a2a-spring</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.2.0-SNAPSHOT</version>
     </parent>
     <artifactId>a2a-spring-boot-starter-web</artifactId>
     <name>A2A Spring Boot Web Starter</name>

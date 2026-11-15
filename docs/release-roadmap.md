@@ -138,8 +138,10 @@ Spring ecosystem integrations.
 
 ## Current baseline
 
-The repository remains on `0.1.0-SNAPSHOT`. The official abstract server test
-contract passes, and the MUST-level JSON-RPC TCK workflow has produced a
-downloadable report. The TCK evidence remains partial because some checks are
-skipped or not tested. Maven Central publication and a clean-consumer
-resolution check remain release work.
+The repository is being prepared on `0.2.0-SNAPSHOT` for the conformance
+candidate. The official abstract server test contract passes, and the
+MUST-level JSON-RPC TCK workflow has produced downloadable baseline and scoped
+reports. The TCK evidence remains partial because some checks are skipped, not
+tested, or pending manual verification. Maven Central publication, signing
+configuration, and a clean-consumer resolution check remain release work. The
+candidate is not a published release.
