@@ -53,6 +53,12 @@ The current line is an early preview, not a stable release.
   Java, Spring Boot, and TCK versions and revision with each report.
 - Track remaining skipped and not-tested requirements explicitly; a successful
   workflow exit does not mean every TCK requirement passed.
+- `CORE-CAP-004` is conditional on advertising a required extension. The
+  baseline sample does not advertise one and continues to skip this check. A
+  separate `tck-required-extension` profile exercises the required-extension
+  error through a scoped JSON-RPC TCK run, with its own report and a CI
+  assertion for `PASS`. This does not change the baseline totals or claim
+  support for other extensions or transports.
 - The Spring adapter preserves the request's `A2A-Version` in
   `ServerCallContext`, including absent and explicitly empty values. A2A Java
   SDK `1.5.1.Final` includes the merged fix for

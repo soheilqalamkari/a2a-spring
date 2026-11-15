@@ -24,7 +24,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.15'
 
       - name: Record tool versions
         id: tool-versions
@@ -65,7 +65,11 @@ jobs:
       - name: Install uv and the official TCK
         run: |
           python -m pip install --disable-pip-version-check uv
-          git clone --depth 1 https://github.com/a2aproject/a2a-tck.git "$RUNNER_TEMP/a2a-tck"
+          tck_ref=104a7b4ae0d83f65c075e3793e322953a830eaba
+          git init "$RUNNER_TEMP/a2a-tck"
+          git -C "$RUNNER_TEMP/a2a-tck" remote add origin https://github.com/a2aproject/a2a-tck.git
+          git -C "$RUNNER_TEMP/a2a-tck" fetch --depth 1 origin "$tck_ref"
+          git -C "$RUNNER_TEMP/a2a-tck" checkout --detach FETCH_HEAD
           git -C "$RUNNER_TEMP/a2a-tck" rev-parse HEAD | tee reports/tck-commit.txt
           cd "$RUNNER_TEMP/a2a-tck"
           uv venv
@@ -82,14 +86,64 @@ jobs:
           A2A_SDK_VERSION: ${{ steps.tool-versions.outputs.a2a_sdk }}
           SPRING_BOOT_VERSION: ${{ steps.tool-versions.outputs.spring_boot }}
 
-      - name: Collect TCK reports
+      - name: Preserve baseline TCK reports
         if: always()
         run: |
           if [ -d "$RUNNER_TEMP/a2a-tck/reports" ]; then
-            cp -R "$RUNNER_TEMP/a2a-tck/reports" reports/tck
+            mkdir -p reports/tck-baseline
+            cp -R "$RUNNER_TEMP/a2a-tck/reports/." reports/tck-baseline/
+          fi
+
+      - name: Start required-extension profile
+        run: |
+          java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.1.0-SNAPSHOT.jar \
+            --spring.profiles.active=tck-required-extension \
+            --server.port=8081 \
+            --a2a.agent.url=http://localhost:8081/a2a > reports/required-extension-server.log 2>&1 &
+          echo $! > required-extension-server.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8081/.well-known/agent-card.json \
+              | python -c 'import json,sys; c=json.load(sys.stdin); assert any(e.get("uri")=="urn:a2a:tck:required-extension" and e.get("required") for e in c.get("capabilities",{}).get("extensions",[]))'; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat reports/required-extension-server.log
+          exit 1
+
+      - name: Run scoped required-extension TCK check
+        working-directory: ${{ runner.temp }}/a2a-tck
+        run: |
+          set +e
+          .venv/bin/python run_tck.py \
+            --sut-host http://127.0.0.1:8081 \
+            --transport jsonrpc \
+            --level must \
+            -- -k TestCapabilityExtensionRequired
+          tck_status=$?
+          set -e
+          mkdir -p "$GITHUB_WORKSPACE/reports/tck-required-extension"
+          cp -R reports/. "$GITHUB_WORKSPACE/reports/tck-required-extension/"
+          if [ "$tck_status" -ne 0 ]; then
+            exit "$tck_status"
+          fi
+          python -c 'import json,pathlib; p=pathlib.Path("reports/compatibility.json"); d=json.loads(p.read_text()); r=d.get("per_requirement",{}).get("CORE-CAP-004"); assert r, "CORE-CAP-004 missing from scoped report"; assert r.get("status")=="PASS", "CORE-CAP-004 status is " + str(r.get("status")); assert r.get("transports",{}).get("jsonrpc")=="PASS", "JSON-RPC CORE-CAP-004 did not pass"; print("CORE-CAP-004 JSON-RPC PASS")'
+        env:
+          A2A_SDK_VERSION: ${{ steps.tool-versions.outputs.a2a_sdk }}
+          SPRING_BOOT_VERSION: ${{ steps.tool-versions.outputs.spring_boot }}
+
+      - name: Collect TCK reports
+        if: always()
+        run: |
+          if [ -d "$RUNNER_TEMP/a2a-tck/reports" ] && [ ! -f reports/tck-required-extension/compatibility.json ]; then
+            mkdir -p reports/tck-required-extension
+            cp -R "$RUNNER_TEMP/a2a-tck/reports/." reports/tck-required-extension/
           fi
           if [ -f server.pid ]; then
             kill "$(cat server.pid)" || true
+          fi
+          if [ -f required-extension-server.pid ]; then
+            kill "$(cat required-extension-server.pid)" || true
           fi
 
       - name: Upload TCK evidence

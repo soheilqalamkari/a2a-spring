@@ -13,7 +13,7 @@ application provides a sender and explicitly enables it.
 
 ## Local verification command
 
-The TCK requires Python 3.11+ and `uv`:
+The pinned TCK revision requires Python 3.15+ and `uv`:
 
 ```bash
 mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
@@ -71,8 +71,42 @@ The 25 requirement-level skips break down as follows:
 | `HTTP_JSON-ERR-001`, `HTTP_JSON-ERR-002`, `HTTP_JSON-SVC-002`, `HTTP_JSON-SSE-001`, `HTTP_JSON-STATUS-001`; `GRPC-ERR-001`, `GRPC-ERR-002`, `GRPC-ERR-003`, `GRPC-META-001`, `GRPC-SVC-001`, `GRPC-SVC-002` | Out of the advertised Spring MVC JSON-RPC/SSE transport scope. |
 | `PUSH-CREATE-001/002`, `PUSH-GET-001/002`, `PUSH-LIST-001`, `PUSH-DEL-001/002`, `PUSH-DELIVER-001/002/003` | The TCK sample does not advertise push notifications. These checks do not establish push behavior; delivery remains application supplied and disabled in the sample. |
 | `CARD-EXT-001/002` | The TCK sample does not advertise the extended Agent Card capability, so authentication and not-configured probes are not applicable to this sample. |
-| `CORE-CAP-004` | The sample does not declare the TCK's required extension, so the missing-required-extension probe is skipped. Extension error behavior remains unverified by this run. |
+| `CORE-CAP-004` | The baseline sample does not declare the TCK's required extension, so this baseline probe is skipped. A separate `tck-required-extension` profile and scoped CI run exercise the required-extension error; see the scoped check below. The baseline count remains unchanged. |
 | `CORE-CAP-002` | The TCK's negative probe asks a streaming-capable agent to behave as if streaming were unsupported. It is skipped because the sample advertises streaming; positive streaming checks are the relevant behavior. |
+
+### Scoped required-extension check (`CORE-CAP-004`)
+
+The CI workflow runs a second hello-world server with the
+`tck-required-extension` profile. This profile advertises the TCK sentinel
+extension `urn:a2a:tck:required-extension` as required. The workflow runs only
+the official `TestCapabilityExtensionRequired` JSON-RPC check and stores its
+reports under `tck-required-extension/`, separate from the baseline report
+under `tck-baseline/`. CI fails if the test does not report
+`CORE-CAP-004` as `PASS` for JSON-RPC. The default Agent Card remains
+extension-free, and this scoped result does not alter the baseline TCK totals
+or imply full TCK conformance.
+
+To reproduce the scoped check locally, build and start the sample from the
+repository root:
+
+```bash
+mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.1.0-SNAPSHOT.jar \
+  --spring.profiles.active=tck-required-extension \
+  --server.port=8081 \
+  --a2a.agent.url=http://localhost:8081/a2a
+```
+
+Then, from the TCK checkout:
+
+```bash
+./run_tck.py --sut-host http://localhost:8081 --transport jsonrpc --level must \
+  -- -k TestCapabilityExtensionRequired
+```
+
+The scoped evidence is valid only when `compatibility.json` reports both
+`per_requirement.CORE-CAP-004.status` and
+`per_requirement.CORE-CAP-004.transports.jsonrpc` as `PASS`.
 
 The JUnit report also contains skipped test cases beyond the 25
 requirement-level entries. Most are parameterized checks for HTTP+JSON/gRPC or
