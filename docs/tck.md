@@ -48,9 +48,9 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The latest successful [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43823120269)
-completed on `main` after PR #24. Download the
-[TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43823120269/artifacts/14204713896)
+The latest successful [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43829790131)
+completed on `main` after PR #30. Download the
+[TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43829790131/artifacts/14208870272)
 for the separate `tck-baseline/` and `tck-required-extension/` reports. It
 used A2A Java SDK `1.5.1.Final`, Spring Boot `3.5.6`, Java `17.0.21`,
 Maven `3.9.15`, Python `3.15.2`, and TCK commit
