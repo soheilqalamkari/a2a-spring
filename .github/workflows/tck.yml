@@ -33,10 +33,21 @@ jobs:
           java -version 2>&1 | tee reports/java-version.txt
           python --version | tee reports/python-version.txt
           mvn --version | tee reports/maven-version.txt
-          sdk_version="$(mvn --quiet --batch-mode --no-transfer-progress \
-            help:evaluate -Dexpression=a2a-java-sdk.version -DforceStdout)"
-          spring_boot_version="$(mvn --quiet --batch-mode --no-transfer-progress \
-            help:evaluate -Dexpression=project.parent.version -DforceStdout)"
+          versions="$(python - <<'PY'
+          import xml.etree.ElementTree as ET
+
+          root = ET.parse("pom.xml").getroot()
+          namespace = {"m": root.tag.split("}", 1)[0] + "}"}
+          sdk_version = root.findtext("m:properties/m:a2a-java-sdk.version", namespaces=namespace)
+          spring_boot_version = root.findtext("m:parent/m:version", namespaces=namespace)
+          if not sdk_version or not spring_boot_version:
+              raise SystemExit("Could not read SDK and Spring Boot versions from pom.xml")
+          print(sdk_version)
+          print(spring_boot_version)
+          PY
+          )"
+          sdk_version="$(printf '%s\n' "$versions" | sed -n '1p')"
+          spring_boot_version="$(printf '%s\n' "$versions" | sed -n '2p')"
           printf '%s\n' "$sdk_version" | tee reports/a2a-java-sdk-version.txt
           printf '%s\n' "$spring_boot_version" | tee reports/spring-boot-version.txt
           echo "a2a_sdk=$sdk_version" >> "$GITHUB_OUTPUT"
