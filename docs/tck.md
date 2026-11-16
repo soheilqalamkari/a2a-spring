@@ -25,6 +25,7 @@ With the sample server running, use another terminal:
 ```bash
 git clone https://github.com/a2aproject/a2a-tck.git ../a2a-tck
 cd ../a2a-tck
+git checkout 104a7b4ae0d83f65c075e3793e322953a830eaba
 uv venv
 source .venv/bin/activate
 uv pip install -e .
@@ -47,9 +48,9 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The latest [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43723265038)
-completed successfully for PR #18. Download the
-[TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43723265038/artifacts/14165780642)
+The latest successful [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43732635253)
+completed on `main` after PR #22. Download the
+[TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43732635253/artifacts/14168199515)
 for the separate `tck-baseline/` and `tck-required-extension/` reports. It
 used A2A Java SDK `1.5.1.Final`, Spring Boot `3.5.6`, Java `17.0.21`,
 Maven `3.9.15`, Python `3.15.2`, and TCK commit
@@ -133,8 +134,18 @@ passes, and they prevent a full conformance claim:
 Seven MUST requirements are pending manual verification rather than marked
 NOT TESTED: `CARD-CLIENT-001`, `CARD-SIGN-001`–`CARD-SIGN-004`,
 `AUTH-TLS-001`, and `BIND-CUSTOM-002`. This project does not advertise Agent
-Card signing. The TCK also lists `AUTH-TLS-002` and `AUTH-SERVER-001` for
-manual verification at SHOULD level.
+Card signing. Their pinned TCK definitions establish the following scope:
+
+| Entry | Classification |
+| --- | --- |
+| `CARD-CLIENT-001` | Client-side tenant selection behavior. The requirement definition says it cannot be established by a server-only probe; this repository does not implement an A2A client. |
+| `CARD-SIGN-001`–`004` | Signing-specific rules. Agent Card signing is neither implemented nor advertised by this integration. |
+| `AUTH-TLS-001` | Production deployments must encrypt HTTP traffic with HTTPS. This is a deployment responsibility, not proven by the sample's local HTTP run. See [HTTPS and production deployments](server.md#https-and-production-deployments). |
+| `BIND-CUSTOM-002` | Applies to breaking changes in custom bindings and requires comparing versions and semantics. This integration advertises only standard JSON-RPC and has no custom binding versions to compare. |
+
+These entries remain MANUAL or not applicable; none is counted as an automated
+PASS. The TCK also lists `AUTH-TLS-002` and `AUTH-SERVER-001` for manual
+verification at SHOULD level.
 
 The remaining 15 NOT TESTED entries are SHOULD/MAY requirements: task-history
 and multi-turn behaviors (`CORE-HIST-*`, `CORE-MULTI-*`), serialization
@@ -144,12 +155,13 @@ forward compatibility (`DM-SERIAL-005`), Agent Card caching
 covered in part by the Java server contract suite, but this TCK run provides
 no evidence for those history requirements.
 
-For merge review, the protocol-relevant items still needing explicit follow-up
-are the corrected JSON-RPC message-only case, version negotiation, security
-and in-task authorization scope, and the extension/push/extended-card
-capabilities if the project later advertises them. Unsupported transport and
-multi-binding checks can remain out of scope while the Agent Card advertises
-only JSON-RPC.
+The message-only JSON-RPC case and version negotiation have focused automated
+coverage. Remaining follow-up is operational TLS verification for an actual
+production deployment, and security/in-task authorization or
+extension/push/extended-card behavior if the project later advertises those
+capabilities. Unsupported transport and multi-binding checks remain out of
+scope while the Agent Card advertises only JSON-RPC. This is partial evidence,
+not full protocol conformance.
 
 The workflow runs for pull requests, updates to `main`, and manual dispatch.
 Report unsupported and non-applicable capabilities separately. Never describe
