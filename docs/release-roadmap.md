@@ -146,6 +146,5 @@ The repository is being prepared on `0.2.0-SNAPSHOT` for the conformance
 candidate. The official abstract server test contract passes, and the
 MUST-level JSON-RPC TCK workflow has produced downloadable baseline and scoped
 reports. The TCK evidence remains partial because some checks are skipped, not
-tested, or pending manual verification. Maven Central publication, signing
-configuration, and a clean-consumer resolution check remain release work. The
-candidate is not a published release.
+tested, or pending manual verification. A signed-bundle preflight passed on
+`main` for `0.2.0` ([run #4](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43839618320)); it verified the GPG signatures and expected Central bundle contents while skipping upload. Maven Central publication and a clean-consumer resolution check remain release work. The candidate is not a published release.
