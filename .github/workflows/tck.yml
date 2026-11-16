@@ -37,7 +37,7 @@ jobs:
           import xml.etree.ElementTree as ET
 
           root = ET.parse("pom.xml").getroot()
-          namespace = {"m": root.tag.split("}", 1)[0] + "}"}
+          namespace = {"m": root.tag[1:].split("}", 1)[0]}
           sdk_version = root.findtext("m:properties/m:a2a-java-sdk.version", namespaces=namespace)
           spring_boot_version = root.findtext("m:parent/m:version", namespaces=namespace)
           if not sdk_version or not spring_boot_version:
