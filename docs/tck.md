@@ -48,14 +48,16 @@ JSON-RPC TCK, and uploads generated reports as workflow artifacts. It records
 Java, Spring Boot, Maven, Python, A2A Java SDK, and TCK revision information.
 ### Latest CI evidence
 
-The latest successful [A2A TCK workflow run](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43829790131)
-completed on `main` after PR #30. Download the
+The latest verified [main-branch TCK evidence for the current implementation](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43829790131)
+is run #41, completed after PR #30. Download the
 [TCK evidence artifact](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43829790131/artifacts/14208870272)
 for the separate `tck-baseline/` and `tck-required-extension/` reports. It
 used A2A Java SDK `1.5.1.Final`, Spring Boot `3.5.6`, Java `17.0.21`,
 Maven `3.9.15`, Python `3.15.2`, and TCK commit
 `104a7b4ae0d83f65c075e3793e322953a830eaba`. The TCK job passed, including its
 assertion that `CORE-CAP-004` is `PASS` for JSON-RPC in the scoped run.
+Later workflow runs associated with documentation-only changes use the same
+implementation and do not supersede this implementation evidence.
 
 The baseline report records 66 MUST requirements as PASS, 25 as SKIPPED,
 17 as NOT TESTED, and 7 as pending manual verification. Its JUnit report
