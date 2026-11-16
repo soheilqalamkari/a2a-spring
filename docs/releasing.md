@@ -8,7 +8,10 @@ commitments.
 
 Release artifacts are prepared for the Central Publisher Portal. The root
 `release` Maven profile attaches source and Javadoc JARs, signs artifacts with
-GPG, and enables Sonatype's `central-publishing-maven-plugin`.
+GPG, and enables Sonatype's `central-publishing-maven-plugin`. The plugin is
+configured to publish validated deployments automatically and wait for the
+`PUBLISHED` state, so a successful release workflow means Central has finished
+publishing rather than only accepting or validating the bundle.
 
 Before a release candidate:
 
@@ -34,10 +37,11 @@ Before publishing artifacts:
    `clean deploy` lifecycle, including tests; never bypass verification.
 5. Run the full test suite and inspect the generated sources, Javadoc, POM,
    signatures, and checksums.
-6. For a local release, run `mvn -Prelease clean deploy` and complete or verify
-   the deployment in the Central Portal. For GitHub Actions, use the manual
+6. For a local release, run `mvn -Prelease clean deploy` and verify the
+   deployment in the Central Portal. For GitHub Actions, dispatch the manual
    `Release` workflow after adding `CENTRAL_USERNAME`, `CENTRAL_PASSWORD`,
-   `GPG_PRIVATE_KEY`, and `MAVEN_GPG_PASSPHRASE` repository secrets.
+   `GPG_PRIVATE_KEY`, and `MAVEN_GPG_PASSPHRASE` repository secrets. The
+   workflow waits until Central reports the deployment as `PUBLISHED`.
 
 Before publishing for the first time, run the manual `Release preflight`
 workflow on `main` with the intended stable version. It uses the GPG secrets to
