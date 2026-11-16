@@ -52,9 +52,6 @@ signatures, and that the runnable sample is excluded. A successful preflight
 does not publish or release the artifacts; publication still requires an
 intentional run of the `Release` workflow.
 
-The latest preflight passed on `main` for `0.2.0` in [workflow run #4](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43839618320). It verified signing and bundle contents; Central upload was skipped.
+Release `0.2.0` was published to Maven Central from source commit [`e84b430`](https://github.com/soheilqalamkari/a2a-spring/commit/e84b4308cd88bee2c1792ded957f513b7cb9306a). The [release workflow run #1](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43844344677) completed successfully after Central reported the deployment as published. A clean external Spring Boot consumer then resolved `io.github.soheilqalamkari:a2a-spring-boot-starter-web:0.2.0` and packaged successfully using an isolated, empty local Maven repository. The earlier [preflight run #4](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43839618320) verified signing and bundle contents before upload.
 
-The current project is not published yet. For the 1.0.0 milestone, verify
-artifact resolution from a clean consumer project. If Maven Central publication
-is blocked, publish reproducible build and local-install instructions as
-allowed by the upstream integration guide.
+For the `1.0.0` milestone, continue compatibility and clean-consumer verification for the final release candidate. TCK results for `0.2.0` remain partial; see [TCK conformance](tck.md).

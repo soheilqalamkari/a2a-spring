@@ -17,7 +17,7 @@ The pinned TCK revision requires Python 3.15+ and `uv`:
 
 ```bash
 mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
-java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.2.0-SNAPSHOT.jar --server.port=8080
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.2.1-SNAPSHOT.jar --server.port=8080
 ```
 
 With the sample server running, use another terminal:
@@ -94,7 +94,7 @@ repository root:
 
 ```bash
 mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
-java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.2.0-SNAPSHOT.jar \
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.2.1-SNAPSHOT.jar \
   --spring.profiles.active=tck-required-extension \
   --server.port=8081 \
   --a2a.agent.url=http://localhost:8081/a2a

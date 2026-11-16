@@ -38,6 +38,8 @@ The current line is an early preview, not a stable release.
 
 ### 0.2.0 — Conformance milestone
 
+**Released:** `0.2.0` was published to Maven Central on 2026-11-16. The [release workflow](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43844344677) completed, and a clean external Spring Boot consumer resolved and packaged the starter from Central. The release source is commit [`e84b430`](https://github.com/soheilqalamkari/a2a-spring/commit/e84b4308cd88bee2c1792ded957f513b7cb9306a). The TCK evidence below remains partial, not full conformance.
+
 - `A2ASpringAbstractServerTest` is enabled and passes all 54 tests against a
   real Spring Boot server on the current development branch.
 - Complete the applicable JSON-RPC contract: task lifecycle and history,
@@ -142,9 +144,4 @@ Spring ecosystem integrations.
 
 ## Current baseline
 
-The repository is being prepared on `0.2.0-SNAPSHOT` for the conformance
-candidate. The official abstract server test contract passes, and the
-MUST-level JSON-RPC TCK workflow has produced downloadable baseline and scoped
-reports. The TCK evidence remains partial because some checks are skipped, not
-tested, or pending manual verification. A signed-bundle preflight passed on
-`main` for `0.2.0` ([run #4](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43839618320)); it verified the GPG signatures and expected Central bundle contents while skipping upload. Maven Central publication and a clean-consumer resolution check remain release work. The candidate is not a published release.
+Release `0.2.0` is published to Maven Central. The release workflow completed in [run #1](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43844344677), and a clean external Spring Boot consumer resolved and packaged `a2a-spring-boot-starter-web:0.2.0` with its transitive dependencies. The release artifacts were built from commit [`e84b430`](https://github.com/soheilqalamkari/a2a-spring/commit/e84b4308cd88bee2c1792ded957f513b7cb9306a). The official abstract server test contract passes all 54 cases. The MUST-level JSON-RPC TCK evidence remains partial: 66 passed, 25 skipped, 17 not tested, and 7 pending manual verification. See [TCK evidence](tck.md); publication does not imply full protocol conformance. The next planned milestone is `0.3.0 — Spring production foundations`.

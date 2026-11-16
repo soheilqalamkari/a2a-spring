@@ -6,7 +6,7 @@ This project provides the foundation for running an A2A agent in a Spring Boot a
 
 ## Current status
 
-The integration is listed in the A2A Java SDK ecosystem. The 0.2.0 conformance candidate is on `main` and remains unpublished; it currently provides:
+The integration is listed in the A2A Java SDK ecosystem. Release `0.2.0` is published to Maven Central and provides:
 
 - `a2a-spring-core` with typed properties and Spring `Environment` configuration;
 - `a2a-spring-boot-autoconfigure` with agent-card and executor discovery;
@@ -46,7 +46,7 @@ Documentation:
 <dependency>
   <groupId>io.github.soheilqalamkari</groupId>
   <artifactId>a2a-spring-boot-starter-web</artifactId>
-  <version>0.2.0-SNAPSHOT</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 
@@ -89,13 +89,7 @@ disabled by default. Enabling the property also requires an application-provided
 
 ## Build
 
-Requires Java 17+ and Maven 3.9+. The `0.2.0-SNAPSHOT` candidate is not yet
-published to Maven Central. To resolve its artifacts in a local consumer project,
-build and install them from this repository first:
-
-```bash
-mvn --batch-mode --no-transfer-progress install
-```
+Requires Java 17+ and Maven 3.9+. Release `0.2.0` is available from Maven Central; no local build or repository setup is required for consumers.
 
 ## Project direction
 
