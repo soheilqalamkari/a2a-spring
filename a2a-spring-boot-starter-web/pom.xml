@@ -15,6 +15,7 @@
             <groupId>io.github.soheilqalamkari</groupId>
             <artifactId>a2a-spring-boot-starter</artifactId>
             <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   signed-bundle-preflight:
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -57,6 +57,7 @@ jobs:
         run: |
           python3 - <<'PY'
           import os
+          import xml.etree.ElementTree as ET
           from pathlib import Path
           import subprocess
           import tempfile
@@ -68,22 +69,29 @@ jobs:
 
           with zipfile.ZipFile(bundle) as archive:
               names = set(archive.namelist())
-              artifacts = [
-                  "a2a-spring",
-                  "a2a-spring-core",
-                  "a2a-spring-boot-autoconfigure",
-                  "a2a-spring-boot-starter",
-                  "a2a-spring-boot-starter-web",
-              ]
+              artifacts = {
+                  "a2a-spring": "pom",
+                  "a2a-spring-core": "jar",
+                  "a2a-spring-boot-autoconfigure": "jar",
+                  "a2a-spring-boot-starter": "pom",
+                  "a2a-spring-boot-starter-web": "jar",
+              }
               version = os.environ["RELEASE_VERSION"]
-              for artifact in artifacts:
+              namespace = "{http://maven.apache.org/POM/4.0.0}"
+              for artifact, expected_packaging in artifacts.items():
                   poms = [name for name in names if name.endswith(f"/{artifact}-{version}.pom")]
                   if not poms:
                       raise SystemExit(f"Missing POM for {artifact}")
                   pom = poms[0]
                   base = pom[:-4]
                   required = [pom, base + ".pom.asc"]
-                  if artifact != "a2a-spring":
+                  project = ET.fromstring(archive.read(pom))
+                  packaging = project.findtext(f"{namespace}packaging", default="jar")
+                  if packaging != expected_packaging:
+                      raise SystemExit(
+                          f"Unexpected packaging for {artifact}: expected {expected_packaging}, got {packaging}"
+                      )
+                  if packaging == "jar":
                       required.extend([
                           base + ".jar", base + ".jar.asc",
                           base + "-sources.jar", base + "-sources.jar.asc",
