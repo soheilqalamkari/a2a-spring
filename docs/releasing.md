@@ -23,7 +23,12 @@ Before publishing artifacts:
    Central Portal.
 2. Configure a `central` server entry in Maven `settings.xml` using a Central
    user token. Never commit the token or a private signing key.
-3. Configure a GPG key and verify it is available to Maven.
+3. Export the GPG private key as ASCII-armored text, for example:
+   `gpg --armor --export-secret-keys <KEY_ID>`. Save the complete output,
+   including the `BEGIN PGP PRIVATE KEY BLOCK` and `END PGP PRIVATE KEY BLOCK`
+   lines, as the `GPG_PRIVATE_KEY` Actions secret. Set
+   `MAVEN_GPG_PASSPHRASE` to that key's passphrase. Do not paste the key into
+   issues, pull requests, chat, or committed files.
 4. Supply a stable numeric release version (for example `0.2.0`) to the
    workflow. It rejects snapshot or malformed versions and runs the full Maven
    `clean deploy` lifecycle, including tests; never bypass verification.
