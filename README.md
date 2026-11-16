@@ -6,7 +6,7 @@ This project provides the foundation for running an A2A agent in a Spring Boot a
 
 ## Current status
 
-The integration is listed in the A2A Java SDK ecosystem. Release `0.2.0` is published to Maven Central and provides:
+The integration is listed in the A2A Java SDK ecosystem. Release [`0.2.0`](https://github.com/soheilqalamkari/a2a-spring/releases/tag/v0.2.0) is available from [Maven Central](https://central.sonatype.com/artifact/io.github.soheilqalamkari/a2a-spring-boot-starter-web/0.2.0) as `io.github.soheilqalamkari:a2a-spring-boot-starter-web:0.2.0` and provides:
 
 - `a2a-spring-core` with typed properties and Spring `Environment` configuration;
 - `a2a-spring-boot-autoconfigure` with agent-card and executor discovery;
