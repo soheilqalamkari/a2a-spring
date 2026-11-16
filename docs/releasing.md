@@ -34,6 +34,15 @@ Before publishing artifacts:
    `Release` workflow after adding `CENTRAL_USERNAME`, `CENTRAL_PASSWORD`,
    `GPG_PRIVATE_KEY`, and `MAVEN_GPG_PASSPHRASE` repository secrets.
 
+Before publishing for the first time, run the manual `Release preflight`
+workflow on `main` with the intended stable version. It uses the GPG secrets to
+build and verify a signed Central bundle, but sets `skipUpload=true` and does
+not use the Central credentials. It checks that the parent and library modules
+are present, that library JAR, sources, Javadoc, and POM files have valid
+signatures, and that the runnable sample is excluded. A successful preflight
+does not publish or release the artifacts; publication still requires an
+intentional run of the `Release` workflow.
+
 The current project is not published yet. For the 1.0.0 milestone, verify
 artifact resolution from a clean consumer project. If Maven Central publication
 is blocked, publish reproducible build and local-install instructions as
