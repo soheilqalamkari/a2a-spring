@@ -78,7 +78,11 @@ than treated as one implementation backlog:
   supported JSON-RPC path by the focused tests above; this does not imply TCK
   coverage.
 - `AUTH-TLS-001` is a production deployment requirement; document TLS at the
-  deployment boundary. The 0.3.0 optional security module will test
+  deployment boundary. The server guide now documents both Spring Boot TLS
+  and trusted edge termination. This is operator guidance; the sample's HTTP
+  TCK run does not verify a production deployment, so `AUTH-TLS-001` remains a
+  manual deployment check rather than an automated PASS. The 0.3.0 optional
+  security module will test
   `AUTH-SERVER-002`, `AUTH-INTASK-001`–`004`, and `AUTH-SCOPE-001`–`003` when
   an application declares authentication requirements or exercises
   authorization-required tasks. These are conditional and are not a claim
