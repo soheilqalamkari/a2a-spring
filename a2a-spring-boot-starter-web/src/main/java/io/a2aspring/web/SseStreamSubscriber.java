@@ -14,7 +14,6 @@ final class SseStreamSubscriber implements Flow.Subscriber<SendStreamingMessageR
     private final ResponseBodyEmitter emitter;
     private final AtomicReference<Flow.Subscription> subscription = new AtomicReference<>();
     private final AtomicBoolean terminated = new AtomicBoolean();
-    private final AtomicBoolean cancellationRequested = new AtomicBoolean();
     private final AtomicBoolean cancellationSent = new AtomicBoolean();
 
     SseStreamSubscriber(ResponseBodyEmitter emitter) {
@@ -32,10 +31,10 @@ final class SseStreamSubscriber implements Flow.Subscriber<SendStreamingMessageR
             return;
         }
 
-        if (cancellationRequested.get()) {
+        if (terminated.get()) {
+            // Response termination may also observe this subscription; share its guard so
+            // cancellation is sent only once across the race.
             cancelSubscription(newSubscription);
-        } else if (terminated.get()) {
-            newSubscription.cancel();
         } else {
             newSubscription.request(Long.MAX_VALUE);
         }
@@ -70,7 +69,6 @@ final class SseStreamSubscriber implements Flow.Subscriber<SendStreamingMessageR
 
     private void cancelIfActive() {
         if (terminated.compareAndSet(false, true)) {
-            cancellationRequested.set(true);
             Flow.Subscription current = subscription.get();
             if (current != null) {
                 cancelSubscription(current);

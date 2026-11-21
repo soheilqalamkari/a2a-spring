@@ -52,6 +52,21 @@ class SseStreamSubscriberTest {
     }
 
     @Test
+    void repeatedResponseSignalsAndLateSubscriptionCancelOnlyOnce() {
+        RecordingEmitter emitter = new RecordingEmitter();
+        SseStreamSubscriber subscriber = new SseStreamSubscriber(emitter);
+
+        emitter.completeResponse();
+        emitter.timeout();
+        RecordingSubscription subscription = new RecordingSubscription();
+        subscriber.onSubscribe(subscription);
+        emitter.error(new IOException("late response error"));
+
+        assertThat(subscription.cancelCalls).isEqualTo(1);
+        assertThat(subscription.requested).isFalse();
+    }
+
+    @Test
     void cancelsWhenSendingAnEventFails() {
         RecordingEmitter emitter = new RecordingEmitter();
         IOException sendFailure = new IOException("client disconnected");
