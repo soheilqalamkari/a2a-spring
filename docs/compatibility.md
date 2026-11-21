@@ -6,6 +6,16 @@ The published 0.2.0 conformance release uses this compatibility baseline:
 | --- | --- | --- | --- |
 | `0.2.0` (released) | `3.5.x` | 17+ | `1.5.1.Final` |
 
+## Runtime security: CVE-2026-114938 (Java4Shell)
+
+CVE-2026-114938 affects the native Base64 decoder in vulnerable HotSpot JDK builds. Exploitation requires an x86-64 CPU with AVX-512 VBMI support and attacker-controlled Base64 data to reach the affected decoder. The Spring starter does not bundle a JDK, so updating this Maven dependency alone cannot patch the vulnerability. The production Java runtime must be updated separately.
+
+Use a fixed build published by your Java vendor and restart every running JVM. The reported fixed release levels are Java 17.0.21.1, 21.0.13.1, 25.0.5.1, and 27.0.1.1; vendor packaging and build suffixes differ, so confirm the exact fixed build in your vendor's advisory. For example, see the [OpenJDK November 2026 advisory](https://openjdk.org/groups/vulnerability/advisories/2026-11-17), [Oracle's November 2026 CPU](https://www.oracle.com/security-alerts/cspunov2026.html), and [Eclipse Temurin's fixed-build guidance](https://adoptium.net/es/news/2026/11/temurin-november-2026-cspu-java4shell).
+
+If an update cannot be deployed immediately, the vendor-described temporary workaround is to start the JVM with `-XX:-UseBASE64Intrinsics`. Confirm the flag and any required syntax with your runtime vendor, restart the process, and remove the workaround after installing a fixed runtime. This workaround does not replace patching.
+
+This is a runtime issue, not a defect fixed by changing the A2A Spring artifact. The `0.2.0` release remains usable on a Java runtime containing the vendor's CVE fix. The Java 17+ compatibility baseline describes language/runtime compatibility; it does not imply that every JDK update is secure.
+
 The supported 0.2.0 server path is Spring MVC with JSON-RPC and SSE, plus
 Agent Card discovery. The starter rejects transport settings other than
 `JSONRPC`. Java client interoperability tests are under
