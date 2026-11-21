@@ -5,6 +5,7 @@ The published 0.2.0 conformance release uses this compatibility baseline:
 | A2A Spring | Spring Boot | Java | Official A2A Java SDK |
 | --- | --- | --- | --- |
 | `0.2.0` (released) | `3.5.x` | 17+ | `1.5.1.Final` |
+| `0.3.0-SNAPSHOT` (in development) | `3.5.x` | 17+ | `1.5.1.Final` |
 
 ## Runtime security: CVE-2026-114938 (Java4Shell)
 
@@ -39,7 +40,8 @@ implementation.
   not provided.
 - Task data uses the SDK's in-memory defaults unless an application replaces
   the store interfaces. Data does not persist across restarts by default.
-- The starter does not provide authentication, authorization configuration,
-  or outbound HTTP push delivery.
+- The released web starter does not provide authentication, authorization
+  configuration, metrics, or outbound HTTP push delivery. Optional security
+  and observability starters are under development for 0.3.0.
 - TCK skips and not-tested requirements remain; see the linked report before
   making claims about any individual capability.

@@ -163,8 +163,9 @@ public class A2AWebAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     A2AWebController a2aWebController(JsonRpcRequestDispatcher dispatcher,
-                                      ServerCallContextFactory contextFactory) {
-        return new A2AWebController(dispatcher, contextFactory);
+                                      ServerCallContextFactory contextFactory,
+                                      org.springframework.beans.factory.ObjectProvider<A2AWebMetricsRecorder> metricsRecorder) {
+        return new A2AWebController(dispatcher, contextFactory, metricsRecorder.getIfAvailable());
     }
 
     @Bean
