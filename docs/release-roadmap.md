@@ -107,9 +107,6 @@ than treated as one implementation backlog:
   and compatibility contract. Keep in-memory storage as the default. The
   pinned SDK JPA extra assessment is in
   [the JPA integration evaluation](jpa-store-integration-evaluation.md); its
-  implementation remains gated on review and merge of the storage contract. The
-  pinned SDK JPA extra assessment is in
-  [the JPA integration evaluation](jpa-store-integration-evaluation.md); its
   implementation remains gated on review and merge of the storage contract.
 - Document authentication, storage replacement, graceful shutdown, and
   supported deployment configurations, including production TLS termination
