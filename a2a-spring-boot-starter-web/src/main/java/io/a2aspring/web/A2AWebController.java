@@ -63,31 +63,7 @@ public class A2AWebController {
             }
 
             ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-            dispatcher.dispatchStreaming(request, context).subscribe(new java.util.concurrent.Flow.Subscriber<>() {
-                @Override
-                public void onSubscribe(java.util.concurrent.Flow.Subscription subscription) {
-                    subscription.request(Long.MAX_VALUE);
-                }
-
-                @Override
-                public void onNext(org.a2aproject.sdk.jsonrpc.common.wrappers.SendStreamingMessageResponse response) {
-                    try {
-                        emitter.send("data: " + JsonUtil.toJson(response) + "\n\n", MediaType.TEXT_PLAIN);
-                    } catch (Exception exception) {
-                        emitter.completeWithError(exception);
-                    }
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    emitter.completeWithError(throwable);
-                }
-
-                @Override
-                public void onComplete() {
-                    emitter.complete();
-                }
-            });
+            dispatcher.dispatchStreaming(request, context).subscribe(new SseStreamSubscriber(emitter));
             return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(emitter);
         } catch (org.a2aproject.sdk.spec.A2AError exception) {
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)

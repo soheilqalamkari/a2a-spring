@@ -15,6 +15,17 @@ official A2A Java SDK server request handler.
 Unsupported methods return a JSON-RPC method-not-found error with code
 `-32601`.
 
+Each SSE connection owns an SDK event-stream subscription. If the HTTP response
+ends because the client disconnects or the response times out, the adapter
+cancels that subscription. This closes that client's stream; it does not
+cancel the A2A task. A client may resubscribe to a task that is still available
+by calling `tasks/resubscribe`. The default in-memory task store does not
+preserve tasks across process restarts. A servlet container may detect a client
+disconnect only on the next response write or when its asynchronous request
+timeout expires. Configure `spring.mvc.async.request-timeout` if the application
+needs a bound on idle stream lifetime; an expired stream can be reconnected
+through task resubscription while the task remains available.
+
 The starter uses the official SDK's in-memory task store, queue manager, and
 push-configuration store by default. Each is exposed through the SDK contract
 (`TaskStore`, `QueueManager`, `PushNotificationConfigStore`, and related
