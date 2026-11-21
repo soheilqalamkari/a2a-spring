@@ -4,6 +4,8 @@ A community-maintained Spring Boot integration for the [official A2A Java SDK](h
 
 This project provides the foundation for running an A2A agent in a Spring Boot application. It keeps protocol behavior in the official SDK and focuses on Spring Boot conventions: auto-configuration, typed properties, dependency injection, and transport adapters.
 
+> **Runtime security notice:** CVE-2026-114938 (Java4Shell) is fixed by updating the Java runtime. The Spring starter does not bundle the JDK. See the [runtime guidance](docs/compatibility.md#runtime-security-cve-2026-114938-java4shell) and install the fixed build from your Java vendor.
+
 ## Current status
 
 The integration is listed in the A2A Java SDK ecosystem. Release [`0.2.0`](https://github.com/soheilqalamkari/a2a-spring/releases/tag/v0.2.0) is available from [Maven Central](https://central.sonatype.com/artifact/io.github.soheilqalamkari/a2a-spring-boot-starter-web/0.2.0) as `io.github.soheilqalamkari:a2a-spring-boot-starter-web:0.2.0` and provides:
