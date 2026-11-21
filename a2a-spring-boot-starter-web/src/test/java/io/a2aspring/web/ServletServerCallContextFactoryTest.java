@@ -3,6 +3,7 @@ package io.a2aspring.web;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.security.Principal;
+import org.a2aproject.sdk.server.auth.UnauthenticatedUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -10,7 +11,7 @@ class ServletServerCallContextFactoryTest {
     private final ServletServerCallContextFactory factory = new ServletServerCallContextFactory();
 
     @Test
-    void createsNonNullAnonymousUserWhenRequestIsUnauthenticated() {
+    void createsSdkUnauthenticatedUserWhenRequestIsUnauthenticated() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("A2A-Version", "1.0");
 
@@ -18,7 +19,7 @@ class ServletServerCallContextFactoryTest {
 
         assertThat(context.getUser()).isNotNull();
         assertThat(context.getUser().isAuthenticated()).isFalse();
-        assertThat(context.getUser().getUsername()).isEqualTo("anonymous");
+        assertThat(context.getUser()).isSameAs(UnauthenticatedUser.INSTANCE);
         assertThat(context.getRequestedProtocolVersion()).isEqualTo("1.0");
         assertThat(context.getState()).containsEntry(
                 org.a2aproject.sdk.server.ServerCallContext.TRANSPORT_KEY,

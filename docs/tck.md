@@ -17,7 +17,7 @@ The pinned TCK revision requires Python 3.15+ and `uv`:
 
 ```bash
 mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
-java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.2.1-SNAPSHOT.jar --server.port=8080
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.3.0-SNAPSHOT.jar --server.port=8080
 ```
 
 With the sample server running, use another terminal:
@@ -94,7 +94,7 @@ repository root:
 
 ```bash
 mvn --batch-mode --no-transfer-progress -pl samples/hello-world -am -DskipTests package
-java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.2.1-SNAPSHOT.jar \
+java -jar samples/hello-world/target/a2a-spring-sample-hello-world-0.3.0-SNAPSHOT.jar \
   --spring.profiles.active=tck-required-extension \
   --server.port=8081 \
   --a2a.agent.url=http://localhost:8081/a2a
@@ -126,7 +126,7 @@ passes, and they prevent a full conformance claim:
 
 | Entries | Scope assessment |
 | --- | --- |
-| `AUTH-SERVER-002`, `AUTH-INTASK-001`–`AUTH-INTASK-004`, `AUTH-SCOPE-001`–`AUTH-SCOPE-003` | These checks need an agent that declares and exercises authentication/authorization requirements. The sample declares no security schemes; in-task authorization behavior remains unverified. |
+| `AUTH-SERVER-002`, `AUTH-INTASK-001`–`AUTH-INTASK-004`, `AUTH-SCOPE-001`–`AUTH-SCOPE-003` | The pinned TCK revision defines these requirements in its registry but has no executable compatibility tests for them. The baseline sample declares no authentication scheme or in-task authorization flow. The 0.3.0 security module adds focused Spring integration tests for identity mapping and SDK `TaskAuthorizationProvider` wiring; these do not change the historical TCK counts or establish an official TCK PASS for the AUTH requirements. |
 | `VER-CLIENT-001`, `VER-CLIENT-002` | Client-side requirements; this server integration does not implement an A2A client. |
 | `VER-SERVER-001` | The TCK does not test this server requirement. Focused Spring JSON-RPC integration tests against A2A Java SDK `1.5.1.Final` cover advertised `1.0`, rejection of unsupported `1.1` and `2.0`, acceptance of patch version `1.0.7`, and absent/empty defaults. SDK `1.5.1.Final` includes the fix merged for [A2A Java issue #1294](https://github.com/a2aproject/a2a-java/issues/1294). This requirement is supported by focused server tests, not by a TCK PASS; see the latest CI evidence above. |
 | `BIND-EQUIV-001`–`BIND-EQUIV-004` | Multi-binding equivalence is not applicable while JSON-RPC is the only supported transport. |
@@ -158,9 +158,10 @@ no evidence for those history requirements.
 
 The message-only JSON-RPC case and version negotiation have focused automated
 coverage. Remaining follow-up is operational TLS verification for an actual
-production deployment, and security/in-task authorization or
-extension/push/extended-card behavior if the project later advertises those
-capabilities. Unsupported transport and multi-binding checks remain out of
+production deployment, and TCK coverage for authentication and in-task
+authorization. The security module's focused tests are implementation evidence,
+not TCK results. Extension, push, and extended-card behavior remain outside the
+baseline sample; unsupported transport and multi-binding checks remain out of
 scope while the Agent Card advertises only JSON-RPC. This is partial evidence,
 not full protocol conformance.
 

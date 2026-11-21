@@ -14,6 +14,8 @@ The integration is listed in the A2A Java SDK ecosystem. Release [`0.2.0`](https
 - `a2a-spring-boot-autoconfigure` with agent-card and executor discovery;
 - `a2a-spring-boot-starter` for application dependencies;
 - `a2a-spring-boot-starter-web` with Spring MVC JSON-RPC hosting;
+- `a2a-spring-boot-starter-security`, an optional adapter in development for
+  the 0.3.0 milestone (not included by the web starter);
 - a runnable `samples/hello-world` application.
 
 The web starter supports Spring MVC with JSON-RPC at `POST /a2a`, Agent
@@ -33,6 +35,7 @@ Documentation:
 
 - [Getting started](docs/getting-started.md)
 - [Configuration](docs/configuration.md)
+- [Security integration](docs/security.md)
 - [Server behavior](docs/server.md)
 - [Compatibility](docs/compatibility.md)
 - [TCK conformance](docs/tck.md)
@@ -95,10 +98,12 @@ Requires Java 17+ and Maven 3.9+. Release `0.2.0` is available from Maven Centra
 
 ## Project direction
 
-See the [release roadmap](docs/release-roadmap.md) for milestone scope and
-release gates. The first stable release targets Spring MVC with JSON-RPC and
-SSE; WebFlux, additional transports, and Spring AI are later, separate
-increments.
+The repository is beginning the `0.3.0-SNAPSHOT` production-foundations
+milestone. Its optional security adapter is being developed separately from
+the existing web starter. See the [release roadmap](docs/release-roadmap.md)
+for milestone scope and gates. The first stable release targets Spring MVC
+with JSON-RPC and SSE; WebFlux, additional transports, and Spring AI are later,
+separate increments.
 
 ## Project status and relationship to A2A Java
 

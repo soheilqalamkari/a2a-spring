@@ -5,6 +5,7 @@ The published 0.2.0 conformance release uses this compatibility baseline:
 | A2A Spring | Spring Boot | Java | Official A2A Java SDK |
 | --- | --- | --- | --- |
 | `0.2.0` (released) | `3.5.x` | 17+ | `1.5.1.Final` |
+| `0.3.0-SNAPSHOT` (development) | `3.5.x` | 17+ | `1.5.1.Final` |
 
 ## Runtime security: CVE-2026-114938 (Java4Shell)
 

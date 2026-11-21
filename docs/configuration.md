@@ -11,7 +11,7 @@ The root property is `a2a`.
 | `a2a.server.enabled` | `true` | Enables the A2A runtime when an `AgentExecutor` exists |
 | `a2a.server.transport` | `JSONRPC` | The only transport supported by the Spring MVC starter; other values fail configuration |
 | `a2a.server.push-notifications-enabled` | `false` | Enables push delivery only when an application provides a `PushNotificationSender` bean |
-| `a2a.security.enabled` | `false` | Reserved for the Spring Security module |
+| `a2a.security.enabled` | `false` | Sets the SDK's `authorizationRequired` flag; when `true`, requires an application `TaskAuthorizationProvider`. Any supplied provider is used by the SDK. Does not enable HTTP endpoint authentication. |
 
 Spring's normal property sources are supported, including YAML,
 `application.properties`, environment variables, command-line arguments, and
@@ -23,3 +23,9 @@ binding rules.
 When push notifications are enabled without an application-provided sender,
 the application fails to start. The default sender is a no-op used only while
 the feature is disabled; it is never advertised as delivery support.
+
+When `a2a.security.enabled=true`, startup fails unless a
+`TaskAuthorizationProvider` bean is available. This property controls the
+official SDK's task-authorization checks; endpoint authentication and
+authorization rules remain application-owned. See [Security](security.md)
+for the optional Spring Security adapter and configuration responsibilities.
