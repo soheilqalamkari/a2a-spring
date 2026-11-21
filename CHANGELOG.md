@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0-SNAPSHOT — In development
+
+- Add an optional Spring Security adapter for mapping authenticated request
+  principals into the SDK context.
+- Wire an application-provided `TaskAuthorizationProvider` into the SDK
+  request handler and fail startup when task authorization is required but
+  no provider is configured.
+- Keep endpoint security rules and Agent Card security declarations
+  application-owned.
+
 ## 0.2.0 — Conformance
 
 Published to Maven Central on 2026-11-16. This is the first conformance milestone release for the Spring MVC integration.

@@ -32,9 +32,13 @@ applications are responsible for configuring that sender.
 
 Incoming servlet requests are converted to the SDK's `ServerCallContext` by a
 dedicated `ServerCallContextFactory`. The default factory always provides a
-non-null SDK `User`: unauthenticated requests use the `anonymous` user, while a
-servlet principal is mapped to an authenticated user. Applications can replace
+non-null SDK `User`: unauthenticated requests use the SDK's
+`UnauthenticatedUser.INSTANCE`, while a servlet principal is mapped to an
+authenticated user. Applications can replace
 the factory when their authentication or tenant model needs richer context.
+When the optional `a2a-spring-boot-starter-security` module is present, its
+resolver recognizes authenticated Spring Security principals and maps them
+through `SpringSecurityUserMapper`. See [Security integration](security.md).
 
 ## HTTPS and production deployments
 
@@ -74,7 +78,8 @@ The TCK cannot establish the TLS configuration of every production deployment.
 TCK pass. See [TCK evidence](tck.md) for the exact status and
 [release requirements](release-roadmap.md) for the conformance gate.
 
-WebFlux, HTTP+JSON, gRPC, Spring Security, persistent storage, and observability
-are outside the currently supported scope. Push delivery can be enabled by an
-application-supplied sender; the starter itself has no outbound HTTP
-implementation.
+WebFlux, HTTP+JSON, and gRPC are outside the currently supported scope.
+Spring Security support is being developed for 0.3.0 and is not included in
+the published 0.2.0 artifacts. Persistent storage and observability are also
+planned for 0.3.0. Push delivery can be enabled by an application-supplied
+sender; the starter itself has no outbound HTTP implementation.

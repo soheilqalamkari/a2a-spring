@@ -22,6 +22,7 @@ import org.a2aproject.sdk.server.tasks.TaskStore;
 import org.a2aproject.sdk.server.multitenancy.AgentExecutorRouter;
 import org.a2aproject.sdk.transport.jsonrpc.handler.JSONRPCHandler;
 import io.a2aspring.core.A2AProperties;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -37,8 +38,10 @@ public class A2AWebAutoConfiguration {
     @Bean
     @Any
     @ConditionalOnMissingBean(name = "a2aAuthorizationProviderInstance")
-    Instance<TaskAuthorizationProvider> a2aAuthorizationProviderInstance() {
-        return SpringCdiInstance.empty();
+    Instance<TaskAuthorizationProvider> a2aAuthorizationProviderInstance(
+            ObjectProvider<TaskAuthorizationProvider> authorizationProviders) {
+        TaskAuthorizationProvider provider = authorizationProviders.getIfAvailable();
+        return provider == null ? SpringCdiInstance.empty() : SpringCdiInstance.of(provider);
     }
 
     @Bean
@@ -128,8 +131,16 @@ public class A2AWebAutoConfiguration {
                                      MainEventBusProcessor processor,
                                      PushNotificationConfigStore pushConfigStore,
                                      A2AProperties properties,
-                                     ExecutorService a2aExecutor) {
-        return DefaultRequestHandler.builder()
+                                     ExecutorService a2aExecutor,
+                                     ObjectProvider<TaskAuthorizationProvider> authorizationProviders) {
+        boolean authorizationRequired = properties.getSecurity().isEnabled();
+        TaskAuthorizationProvider authorizationProvider = authorizationProviders.getIfAvailable();
+        if (authorizationRequired && authorizationProvider == null) {
+            throw new IllegalStateException("a2a.security.enabled=true requires an application-provided "
+                    + "TaskAuthorizationProvider bean");
+        }
+
+        DefaultRequestHandler.Builder builder = DefaultRequestHandler.builder()
                 .agentExecutor(executor)
                 .taskStore(taskStore)
                 .queueManager(queueManager)
@@ -137,8 +148,12 @@ public class A2AWebAutoConfiguration {
                 .mainEventBusProcessor(processor)
                 .executor(a2aExecutor)
                 .eventConsumerExecutor(a2aExecutor)
-                .pushNotificationsEnabled(properties.getServer().isPushNotificationsEnabled())
-                .build();
+                .authorizationRequired(authorizationRequired)
+                .pushNotificationsEnabled(properties.getServer().isPushNotificationsEnabled());
+        if (authorizationProvider != null) {
+            builder.authorizationProvider(authorizationProvider);
+        }
+        return builder.build();
     }
 
     @Bean
@@ -150,8 +165,19 @@ public class A2AWebAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    ServerCallContextFactory a2aServerCallContextFactory() {
-        return new ServletServerCallContextFactory();
+    ServerCallContextUserResolver a2aServerCallContextUserResolver() {
+        return request -> {
+            var principal = request.getUserPrincipal();
+            return principal == null
+                    ? org.a2aproject.sdk.server.auth.UnauthenticatedUser.INSTANCE
+                    : new org.a2aproject.sdk.server.auth.AuthenticatedUser(principal.getName());
+        };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    ServerCallContextFactory a2aServerCallContextFactory(ServerCallContextUserResolver userResolver) {
+        return new ServletServerCallContextFactory(userResolver);
     }
 
     @Bean

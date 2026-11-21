@@ -99,6 +99,11 @@ than treated as one implementation backlog:
 
 ### 0.3.0 — Spring production foundations
 
+- Development starts from `0.3.0-SNAPSHOT` after the `0.2.0` Central release.
+- The first implementation item is the optional Spring Security adapter in
+  [issue #40](https://github.com/soheilqalamkari/a2a-spring/issues/40). The
+  adapter must not install endpoint security rules or claim Agent Card
+  security metadata by default.
 - Add optional Spring Security integration using Spring Security and official
   SDK authorization extension points.
 - Add optional Micrometer/Actuator metrics for requests, task outcomes, and
@@ -144,4 +149,4 @@ Spring ecosystem integrations.
 
 ## Current baseline
 
-Release `0.2.0` is published to Maven Central. The release workflow completed in [run #1](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43844344677), and a clean external Spring Boot consumer resolved and packaged `a2a-spring-boot-starter-web:0.2.0` with its transitive dependencies. The release artifacts were built from commit [`e84b430`](https://github.com/soheilqalamkari/a2a-spring/commit/e84b4308cd88bee2c1792ded957f513b7cb9306a). The official abstract server test contract passes all 54 cases. The MUST-level JSON-RPC TCK evidence remains partial: 66 passed, 25 skipped, 17 not tested, and 7 pending manual verification. See [TCK evidence](tck.md); publication does not imply full protocol conformance. The next planned milestone is `0.3.0 — Spring production foundations`.
+Release `0.2.0` is published to Maven Central. The repository has moved to the `0.3.0-SNAPSHOT` development line; this is not a published release. The release workflow completed in [run #1](https://github.com/soheilqalamkari/a2a-spring/actions/runs/43844344677), and a clean external Spring Boot consumer resolved and packaged `a2a-spring-boot-starter-web:0.2.0` with its transitive dependencies. The release artifacts were built from commit [`e84b430`](https://github.com/soheilqalamkari/a2a-spring/commit/e84b4308cd88bee2c1792ded957f513b7cb9306a). The official abstract server test contract passes all 54 cases. The MUST-level JSON-RPC TCK evidence remains partial: 66 passed, 25 skipped, 17 not tested, and 7 pending manual verification. See [TCK evidence](tck.md); publication does not imply full protocol conformance.

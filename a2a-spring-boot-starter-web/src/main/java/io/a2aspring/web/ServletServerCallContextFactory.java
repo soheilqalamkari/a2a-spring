@@ -1,6 +1,5 @@
 package io.a2aspring.web;
 
-import java.security.Principal;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
@@ -8,12 +7,23 @@ import java.util.Map;
 import java.util.Set;
 import jakarta.servlet.http.HttpServletRequest;
 import org.a2aproject.sdk.server.ServerCallContext;
+import org.a2aproject.sdk.server.auth.AuthenticatedUser;
+import org.a2aproject.sdk.server.auth.UnauthenticatedUser;
 import org.a2aproject.sdk.server.auth.User;
 import org.a2aproject.sdk.spec.TransportProtocol;
 
 /** Default servlet adapter for the SDK's non-null server call context. */
 public final class ServletServerCallContextFactory implements ServerCallContextFactory {
     static final String HEADERS_STATE_KEY = "headers";
+    private final ServerCallContextUserResolver userResolver;
+
+    public ServletServerCallContextFactory() {
+        this(ServletServerCallContextFactory::defaultUser);
+    }
+
+    public ServletServerCallContextFactory(ServerCallContextUserResolver userResolver) {
+        this.userResolver = java.util.Objects.requireNonNull(userResolver, "userResolver");
+    }
 
     @Override
     public ServerCallContext create(HttpServletRequest request) {
@@ -22,7 +32,7 @@ public final class ServletServerCallContextFactory implements ServerCallContextF
         state.put(HEADERS_STATE_KEY, headers(request));
 
         String protocolVersion = request.getHeader("A2A-Version");
-        return new ServerCallContext(user(request), state, Set.of(), protocolVersion);
+        return new ServerCallContext(userResolver.resolve(request), state, Set.of(), protocolVersion);
     }
 
     private Map<String, String> headers(HttpServletRequest request) {
@@ -36,20 +46,8 @@ public final class ServletServerCallContextFactory implements ServerCallContextF
         return Map.copyOf(headers);
     }
 
-    private User user(HttpServletRequest request) {
-        Principal principal = request.getUserPrincipal();
-        return new ServletUser(principal == null ? "anonymous" : principal.getName(), principal != null);
-    }
-
-    private record ServletUser(String username, boolean authenticated) implements User {
-        @Override
-        public boolean isAuthenticated() {
-            return authenticated;
-        }
-
-        @Override
-        public String getUsername() {
-            return username;
-        }
+    private static User defaultUser(HttpServletRequest request) {
+        var principal = request.getUserPrincipal();
+        return principal == null ? UnauthenticatedUser.INSTANCE : new AuthenticatedUser(principal.getName());
     }
 }
