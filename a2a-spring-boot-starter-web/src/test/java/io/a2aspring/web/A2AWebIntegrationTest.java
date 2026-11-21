@@ -42,12 +42,21 @@ class A2AWebIntegrationTest {
     @Autowired
     private AgentCard agentCard;
 
+    @Autowired
+    private org.springframework.context.ApplicationContext applicationContext;
+
     @Test
     void exposesReplaceableSdkInfrastructureContracts() {
         org.assertj.core.api.Assertions.assertThat(taskStore).isInstanceOf(
                 org.a2aproject.sdk.server.tasks.InMemoryTaskStore.class);
         org.assertj.core.api.Assertions.assertThat(queueManager).isNotNull();
         org.assertj.core.api.Assertions.assertThat(pushNotificationConfigStore).isNotNull();
+    }
+
+    @Test
+    void baseWebStarterHasNoMetricsInstrumentation() {
+        org.assertj.core.api.Assertions.assertThat(applicationContext
+                .getBeansOfType(A2AWebMetricsRecorder.class)).isEmpty();
     }
 
     @Test

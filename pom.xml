@@ -43,6 +43,7 @@
         <module>a2a-spring-boot-autoconfigure</module>
         <module>a2a-spring-boot-starter</module>
         <module>a2a-spring-boot-starter-web</module>
+        <module>a2a-spring-boot-starter-observability</module>
         <module>samples/hello-world</module>
     </modules>
 

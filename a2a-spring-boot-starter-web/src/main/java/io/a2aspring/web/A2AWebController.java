@@ -19,19 +19,32 @@ import org.springframework.web.bind.annotation.RestController;
 public class A2AWebController {
     private final JsonRpcRequestDispatcher dispatcher;
     private final ServerCallContextFactory contextFactory;
+    private final A2AWebMetricsRecorder metricsRecorder;
 
     public A2AWebController(JsonRpcRequestDispatcher dispatcher,
-                            ServerCallContextFactory contextFactory) {
+                            ServerCallContextFactory contextFactory,
+                            A2AWebMetricsRecorder metricsRecorder) {
         this.dispatcher = dispatcher;
         this.contextFactory = contextFactory;
+        this.metricsRecorder = metricsRecorder;
     }
 
     @PostMapping(value = {"/a2a", "/a2a/", "/"})
     public ResponseEntity<?> jsonRpc(@RequestBody String request, jakarta.servlet.http.HttpServletRequest servletRequest) throws Exception {
-        var context = contextFactory.create(servletRequest);
+        String method = metricsRecorder == null ? "other" : requestMethod(request);
+        A2AWebMetricsRecorder.RequestObservation requestObservation = metricsRecorder == null
+                ? null : metricsRecorder.startRequest(method);
+        org.a2aproject.sdk.server.ServerCallContext context;
+        try {
+            context = contextFactory.create(servletRequest);
+        } catch (Exception exception) {
+            complete(requestObservation, "error");
+            throw exception;
+        }
         if (servletRequest.getContentType() == null
                 || !servletRequest.getContentType().toLowerCase(java.util.Locale.ROOT)
                 .startsWith(MediaType.APPLICATION_JSON_VALUE)) {
+            complete(requestObservation, "unsupported_content_type");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                     .body(JsonUtil.toJson(errorResponse(request, -32005,
                             "Content type is not supported")));
@@ -39,6 +52,7 @@ public class A2AWebController {
         try {
             JsonParser.parseString(request).getAsJsonObject();
         } catch (RuntimeException exception) {
+            complete(requestObservation, "parse_error");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                     .body(JsonUtil.toJson(errorResponse(request, -32700, "Parse error")));
         }
@@ -53,17 +67,41 @@ public class A2AWebController {
                 && (!root.get("id").isJsonPrimitive()
                 || (!root.get("id").getAsJsonPrimitive().isString()
                 && !root.get("id").getAsJsonPrimitive().isNumber())))) {
+            complete(requestObservation, "invalid_request");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                     .body(JsonUtil.toJson(errorResponse(request, -32600, "Invalid Request")));
         }
         try {
             if (!dispatcher.isStreaming(request)) {
                 String response = dispatcher.dispatch(request, context);
+                recordTaskOutcome(response);
+                complete(requestObservation, responseOutcome(response));
                 return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(response);
             }
 
+            var publisher = dispatcher.dispatchStreaming(request, context);
             ResponseBodyEmitter emitter = new ResponseBodyEmitter();
-            dispatcher.dispatchStreaming(request, context).subscribe(new java.util.concurrent.Flow.Subscriber<>() {
+            A2AWebMetricsRecorder.StreamObservation streamObservation = requestObservation == null
+                    ? null : requestObservation.startStream();
+            complete(requestObservation, "streaming");
+            java.util.concurrent.atomic.AtomicReference<String> streamOutcome =
+                    new java.util.concurrent.atomic.AtomicReference<>("success");
+            java.util.concurrent.atomic.AtomicBoolean streamFinished = new java.util.concurrent.atomic.AtomicBoolean();
+            Runnable finishStream = () -> {
+                if (streamObservation != null && streamFinished.compareAndSet(false, true)) {
+                    streamObservation.complete(streamOutcome.get());
+                }
+            };
+            emitter.onCompletion(finishStream);
+            emitter.onTimeout(() -> {
+                streamOutcome.set("timeout");
+                finishStream.run();
+            });
+            emitter.onError(error -> {
+                streamOutcome.set("error");
+                finishStream.run();
+            });
+            publisher.subscribe(new java.util.concurrent.Flow.Subscriber<>() {
                 @Override
                 public void onSubscribe(java.util.concurrent.Flow.Subscription subscription) {
                     subscription.request(Long.MAX_VALUE);
@@ -72,14 +110,19 @@ public class A2AWebController {
                 @Override
                 public void onNext(org.a2aproject.sdk.jsonrpc.common.wrappers.SendStreamingMessageResponse response) {
                     try {
+                        recordTaskOutcome(JsonUtil.toJson(response));
                         emitter.send("data: " + JsonUtil.toJson(response) + "\n\n", MediaType.TEXT_PLAIN);
                     } catch (Exception exception) {
+                        streamOutcome.set("error");
+                        finishStream.run();
                         emitter.completeWithError(exception);
                     }
                 }
 
                 @Override
                 public void onError(Throwable throwable) {
+                    streamOutcome.set("error");
+                    finishStream.run();
                     emitter.completeWithError(throwable);
                 }
 
@@ -90,16 +133,70 @@ public class A2AWebController {
             });
             return ResponseEntity.ok().contentType(MediaType.TEXT_EVENT_STREAM).body(emitter);
         } catch (org.a2aproject.sdk.spec.A2AError exception) {
+            complete(requestObservation, "protocol_error");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                     .body(JsonUtil.toJson(errorResponse(request,
                             exception.getCode() == null ? -32006 : exception.getCode(),
                             exception.getMessage())));
         } catch (RuntimeException exception) {
+            complete(requestObservation, "invalid_params");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                     .body(JsonUtil.toJson(errorResponse(request, -32602, "Invalid params")));
         } catch (Exception exception) {
+            complete(requestObservation, "error");
             return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                     .body(JsonUtil.toJson(errorResponse(request, -32602, "Invalid params")));
+        }
+    }
+
+    private void complete(A2AWebMetricsRecorder.RequestObservation observation, String outcome) {
+        if (observation != null) {
+            observation.complete(outcome);
+        }
+    }
+
+    private String requestMethod(String request) {
+        try {
+            JsonObject root = JsonParser.parseString(request).getAsJsonObject();
+            return root.has("method") && root.get("method").isJsonPrimitive()
+                    ? root.get("method").getAsString() : "other";
+        } catch (RuntimeException exception) {
+            return "other";
+        }
+    }
+
+    private String responseOutcome(String response) {
+        try {
+            JsonObject root = JsonParser.parseString(response).getAsJsonObject();
+            return root.has("error") && !root.get("error").isJsonNull() ? "protocol_error" : "success";
+        } catch (RuntimeException exception) {
+            return "error";
+        }
+    }
+
+    private void recordTaskOutcome(String response) {
+        if (metricsRecorder == null) {
+            return;
+        }
+        try {
+            JsonObject root = JsonParser.parseString(response).getAsJsonObject();
+            JsonObject result = root.has("result") && root.get("result").isJsonObject()
+                    ? root.getAsJsonObject("result") : root;
+            if (result.has("task") && result.get("task").isJsonObject()) {
+                result = result.getAsJsonObject("task");
+            }
+            JsonObject status = result.has("status") && result.get("status").isJsonObject()
+                    ? result.getAsJsonObject("status") : null;
+            if (status == null || !status.has("state") || !status.get("state").isJsonPrimitive()) {
+                return;
+            }
+            String outcome = status.get("state").getAsString().toLowerCase(java.util.Locale.ROOT)
+                    .replace("task_state_", "");
+            if (java.util.Set.of("completed", "failed", "canceled", "rejected").contains(outcome)) {
+                metricsRecorder.recordTaskOutcome(outcome);
+            }
+        } catch (RuntimeException ignored) {
+            // Metrics must not change transport behavior for an unexpected response shape.
         }
     }
 

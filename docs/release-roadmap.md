@@ -102,7 +102,8 @@ than treated as one implementation backlog:
 - Add optional Spring Security integration using Spring Security and official
   SDK authorization extension points.
 - Add optional Micrometer/Actuator metrics for requests, task outcomes, and
-  streaming; document names and cardinality expectations.
+  streaming; document names and cardinality expectations. Implementation is
+  tracked in [issue #46](https://github.com/soheilqalamkari/a2a-spring/issues/46).
 - Add a persistent task-store adapter only after documenting its lifecycle
   and compatibility contract. Keep in-memory storage as the default.
 - Document authentication, storage replacement, graceful shutdown, and

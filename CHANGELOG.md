@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0-SNAPSHOT — In development
+
+- Add an optional Micrometer and Actuator starter for bounded-cardinality
+  JSON-RPC request, terminal task outcome, and SSE lifecycle metrics.
+- Keep instrumentation out of the base web starter unless the optional
+  observability starter is added.
+
 ## 0.2.0 — Conformance
 
 Published to Maven Central on 2026-11-16. This is the first conformance milestone release for the Spring MVC integration.

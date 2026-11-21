@@ -14,6 +14,7 @@ The integration is listed in the A2A Java SDK ecosystem. Release [`0.2.0`](https
 - `a2a-spring-boot-autoconfigure` with agent-card and executor discovery;
 - `a2a-spring-boot-starter` for application dependencies;
 - `a2a-spring-boot-starter-web` with Spring MVC JSON-RPC hosting;
+- `a2a-spring-boot-starter-observability`, an optional Micrometer and Actuator integration in development for bounded-cardinality request, task, and SSE metrics;
 - a runnable `samples/hello-world` application.
 
 The web starter supports Spring MVC with JSON-RPC at `POST /a2a`, Agent
@@ -33,6 +34,7 @@ Documentation:
 
 - [Getting started](docs/getting-started.md)
 - [Configuration](docs/configuration.md)
+- [Metrics and observability](docs/observability.md)
 - [Server behavior](docs/server.md)
 - [Compatibility](docs/compatibility.md)
 - [TCK conformance](docs/tck.md)
