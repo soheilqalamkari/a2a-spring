@@ -3,6 +3,9 @@
 This project adapts the official A2A Java SDK to Spring Boot. It does not
 reimplement the A2A protocol.
 
+For a complete runnable application built against the published `0.2.0`
+artifact, follow the [help desk agent tutorial](tutorials/spring-boot-a2a-020.md).
+
 ## 1. Add the starter
 
 Release `0.2.0` is published to Maven Central. Add the starter dependency:

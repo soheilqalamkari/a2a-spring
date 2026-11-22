@@ -14,7 +14,7 @@ The integration is listed in the A2A Java SDK ecosystem. Release [`0.2.0`](https
 - `a2a-spring-boot-autoconfigure` with agent-card and executor discovery;
 - `a2a-spring-boot-starter` for application dependencies;
 - `a2a-spring-boot-starter-web` with Spring MVC JSON-RPC hosting;
-- a runnable `samples/hello-world` application.
+- runnable `samples/hello-world` and `samples/tutorial-help-desk` applications.
 
 The web starter supports Spring MVC with JSON-RPC at `POST /a2a`, Agent
 Card discovery at `GET /.well-known/agent-card.json`, and SSE for streaming
@@ -31,6 +31,7 @@ requirements.
 
 Documentation:
 
+- [Tutorial: build a help desk agent with A2A Spring 0.2.0](docs/tutorials/spring-boot-a2a-020.md)
 - [Getting started](docs/getting-started.md)
 - [Configuration](docs/configuration.md)
 - [Server behavior](docs/server.md)
