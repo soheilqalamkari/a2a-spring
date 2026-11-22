@@ -104,7 +104,10 @@ than treated as one implementation backlog:
 - Add optional Micrometer/Actuator metrics for requests, task outcomes, and
   streaming; document names and cardinality expectations.
 - Add a persistent task-store adapter only after documenting its lifecycle
-  and compatibility contract. Keep in-memory storage as the default.
+  and compatibility contract. Keep in-memory storage as the default. The
+  pinned SDK JPA extra assessment is in
+  [the JPA integration evaluation](jpa-store-integration-evaluation.md); its
+  implementation remains gated on review and merge of the storage contract.
 - Document authentication, storage replacement, graceful shutdown, and
   supported deployment configurations, including production TLS termination
   and the conditional authentication/authorization test scope above.
