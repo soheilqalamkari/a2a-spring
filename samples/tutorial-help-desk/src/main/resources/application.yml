@@ -1,0 +1,10 @@
+a2a:
+  agent:
+    name: help-desk-agent
+    description: Answers basic help-desk questions about support hours and password reset
+    version: 1.0.0
+    url: http://localhost:8080/a2a
+  server:
+    enabled: true
+    transport: JSONRPC
+    push-notifications-enabled: false
