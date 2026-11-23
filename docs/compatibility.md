@@ -21,6 +21,10 @@ Agent Card discovery. The starter rejects transport settings other than
 `JSONRPC`. Java client interoperability tests are under
 `a2a-spring-boot-starter-web/src/test`.
 
+Operational guidance for HTTPS, graceful shutdown, SSE lifetime, readiness,
+and deployment boundaries is in [Server behavior](server.md#https-and-production-deployments)
+and [Graceful shutdown and deployment operations](server.md#graceful-shutdown-and-deployment-operations).
+
 `A2ASpringAbstractServerTest` passes all 54 tests with zero failures, errors,
 or skips. The latest MUST-level JSON-RPC TCK workflow passed with 66 MUST
 requirements passing, 25 skipped, 17 not tested, and 7 pending manual

@@ -74,6 +74,51 @@ The TCK cannot establish the TLS configuration of every production deployment.
 TCK pass. See [TCK evidence](tck.md) for the exact status and
 [release requirements](release-roadmap.md) for the conformance gate.
 
+## Graceful shutdown and deployment operations
+
+Spring Boot 3.5 supports graceful shutdown for the embedded servlet server.
+Configure a finite shutdown phase timeout so in-flight HTTP requests have a
+bounded opportunity to finish while the server stops accepting new requests:
+
+```yaml
+server:
+  shutdown: graceful
+
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+```
+
+Spring Boot 3.5 enables graceful shutdown by default, but setting
+`server.shutdown: graceful` explicitly makes the deployment intent clear. The
+timeout applies to a Spring lifecycle phase; it is not a promise that every
+request or stream will finish. Align the platform's termination grace period
+to exceed the application timeout and leave time for process cleanup. Send a
+normal termination signal such as `SIGTERM`; abrupt termination and IDE stop
+buttons may bypass the graceful path. See the Spring Boot 3.5
+[graceful-shutdown reference](https://docs.spring.io/spring-boot/3.5/reference/web/graceful-shutdown.html).
+
+During shutdown, the embedded server stops accepting new requests and allows
+existing requests time to complete. A long-lived SSE response may therefore
+remain open until it ends or the configured shutdown timeout expires. Ending
+an SSE response is a transport lifecycle event; it does not cancel the A2A
+task. Stream-subscription cleanup is tracked separately in
+[issue #52](https://github.com/soheilqalamkari/a2a-spring/issues/52) and its
+pull request, and becomes available when that change is included in the
+application's version. A client can reconnect using task resubscription while
+the task is still available. With the default in-memory task store, process
+termination loses task state, and a task that was active before shutdown does
+not resume after restart. Persisting task records alone would not persist
+execution, queues, events, or live streams.
+
+For deployments behind an orchestrator or load balancer, stop routing new
+traffic before terminating the process when the platform supports that
+sequence. Configure readiness and health checks in the application or
+deployment. Actuator is not a dependency of the base web starter; add and
+configure it separately if its endpoints are needed. Keep TLS at the
+application server or a trusted edge as described above, and protect the
+application-to-edge hop.
+
 WebFlux, HTTP+JSON, gRPC, Spring Security, persistent storage, and observability
 are outside the currently supported scope. Push delivery can be enabled by an
 application-supplied sender; the starter itself has no outbound HTTP
